@@ -1,0 +1,32 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: BCM
+      MYSQL_USER: bcm_user
+      MYSQL_PASSWORD: password
+      API_KEY: your-secret-key
+      RANDOM_TOKEN_SECRET: RANDOM_SECRET_KEY
+    volumes:
+      - ./images:/app/images
+
+  db:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: BCM
+      MYSQL_USER: bcm_user
+      MYSQL_PASSWORD: password
+
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    container_name: db

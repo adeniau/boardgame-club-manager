@@ -1,6 +1,8 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.local
     ports:
       - "3000:3000"
     depends_on:
@@ -14,6 +16,7 @@ services:
       RANDOM_TOKEN_SECRET: RANDOM_SECRET_KEY
     volumes:
       - ./images:/app/images
+      - shared-images:/app/shared-images
 
   db:
     image: mariadb:latest
@@ -23,10 +26,10 @@ services:
       MYSQL_DATABASE: BCM
       MYSQL_USER: bcm_user
       MYSQL_PASSWORD: password
-
-    ports:
-      - "3306:3306"
     volumes:
       - ./db_data:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d
     container_name: db
+
+volumes:
+  shared-images:

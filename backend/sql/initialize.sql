@@ -1,11 +1,11 @@
 --
--- Base de données :  `---MYSQL_DATABASE---`
+-- Base de données :  `BCM`
 --
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `---MYSQL_DATABASE---` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `BCM` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 -- --------------------------------------------------------
-use ---MYSQL_DATABASE---;
+use BCM;
 
 --
 -- Structure de la table `memberships`
@@ -186,3 +186,24 @@ CREATE VIEW `total_games_borrows` AS SELECT id_season, COUNT(DISTINCT id_game) A
 --
 INSERT INTO `members`  (name,firstname,adress,postal_code,city,email,birth_date,phone_number,picture,admin_password,discord_tag,admin)
 VALUES ("admin","admin"," ",0," ","admin","2000-01-01"," ","","$2b$10$NwwcU1auJ30hIs3oLvcVzesx/s6BczdjYJnWBp8bIUN7BN8qm0ey2","","1");
+
+--
+-- Insertion de jeux de test avec available='1' par défaut
+--
+INSERT INTO `games` (name, picture, available) VALUES
+("Catan (Les Colons de Catane)", "", "1"),
+("Azul", "", "1"),
+("Wingspan", "", "0"),
+("7 Wonders", "", "1"),
+("Splendor", "", "1"),
+("Ticket to Ride", "", "1"),
+("Pandemic", "", "1"),
+("King of Tokyo", "", "1"),
+("Scythe", "", "1"),
+("Agricola", "", "1");
+
+--
+-- Insertion d'une saison de test
+--
+INSERT INTO `seasons` (id, name, start_date, end_date, description) VALUES
+(1, "2024-2025", "2024-09-01", "2025-06-30", "Saison de test 2024-2025");

@@ -58,12 +58,12 @@ const fs = require('fs');
   // POST
   router.post('/', authenticateToken, multer, async (req, res) => {
     let games = req.body;
-    let imageURL = "";
+    let imageUrl = "";
     if (req.file) {
-        imageURL=`${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+        imageUrl = `/images/${req.file.filename}`;
     }
     try {
-        const result = await db.pool.query("insert into games (name,picture,available) values (?,?,?)", [games.name,imageURL,games.available]);
+        const result = await db.pool.query("insert into games (name,picture,available) values (?,?,?)", [games.name,imageUrl,games.available]);
         res.send(result);
     } catch (err) {
         console.error(err);
@@ -72,36 +72,86 @@ const fs = require('fs');
   });
   router.put('/:id', authenticateToken, multer, async (req, res) => {
     let games = req.body;
-    if (req.file) {
-        let imageURL=`${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-        try {
-          const result = await db.pool.query("update games set name=?, picture=?, available=? where id=?", [games.name,imageURL,games.available,req.params.id]);
-          res.send(result);
-        } catch (err) {
-          console.error(err);
-          res.status(500).json({ message: 'Server Error !' });
+    
+    try {
+      // Get current game info to handle old image deletion
+      const currentGame = await db.pool.query("select picture from games where id=?", [req.params.id]);
+      let oldImagePath = null;
+      if (currentGame.length > 0 && currentGame[0].picture) {
+        oldImagePath = currentGame[0].picture;
+      }
+
+      if (req.file) {
+        // New image uploaded - delete old image and add new one
+        let imageUrl = `/images/${req.file.filename}`;
+
+        // Delete old image file if it exists
+        if (oldImagePath) {
+          const actualFilename = oldImagePath.includes('/images/') ? oldImagePath.split('/images/')[1] : oldImagePath;
+          if (actualFilename && actualFilename.length > 0) {
+            const localFilepath = `images/${actualFilename}`;
+            
+            if (fs.existsSync(localFilepath)) {
+              fs.unlink(localFilepath, (err) => {
+                if (err) {
+                  console.error(`Error deleting old image ${localFilepath}:`, err);
+                }
+              });
+            }
+          }
         }
-    }
-    else {
-      try {
+        
+        const result = await db.pool.query("update games set name=?, picture=?, available=? where id=?", [games.name,imageUrl,games.available,req.params.id]);
+        res.send(result);
+      }
+      else if (games.removeImage === 'true') {
+        // Remove image request - delete file and clear DB
+        if (oldImagePath) {
+          const actualFilename = oldImagePath.includes('/images/') ? oldImagePath.split('/images/')[1] : oldImagePath;
+          if (actualFilename && actualFilename.length > 0) {
+            const localFilepath = `images/${actualFilename}`;
+            
+            if (fs.existsSync(localFilepath)) {
+              fs.unlink(localFilepath, (err) => {
+                if (err) {
+                  console.error(`Error deleting image ${localFilepath}:`, err);
+                }
+              });
+            }
+          }
+        }
+        
+        const result = await db.pool.query("update games set name=?, picture=?, available=? where id=?", [games.name,'',games.available,req.params.id]);
+        res.send(result);
+      }
+      else {
+        // No image change - just update name and availability
         const result = await db.pool.query("update games set name=?, available=? where id=?", [games.name,games.available,req.params.id]);
         res.send(result);
-      } catch (err) {
+      }
+    } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server Error !' });
-      }
-    } 
-    
+    }
   });
   router.delete('/:id', authenticateToken, async (req, res) => {
     try {
         const resultselect = await db.pool.query("select picture from games where id=?", [req.params.id]);
-        const filename = resultselect[0].picture.split('/images/')[1];
-        if (filename.length!=0) {
-          fs.unlink(`images/${filename}`,
-            (err => {
-                if (err) console.log(err);
-            }));
+        if (resultselect.length > 0 && resultselect[0].picture) {
+          const filename = resultselect[0].picture;
+          // Check if it's a filename or a URL (backward compatibility)
+          const actualFilename = filename.includes('/images/') ? filename.split('/images/')[1] : filename;
+          if (actualFilename && actualFilename.length > 0) {
+            const localFilepath = `images/${actualFilename}`;
+            
+            if (fs.existsSync(localFilepath)) {
+              fs.unlink(localFilepath, (err) => {
+                if (err) {
+                  console.error('Error deleting file:', err);
+                }
+              });
+            }
+          }
         }
         const result = await db.pool.query("delete from games where id=?", [req.params.id]);
         res.send(result);

@@ -51,7 +51,7 @@ app.use('/api/user', userRoutes);
 
 //Route pour le dossier images
 const path = require('path');
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static('/app/images'));
 
 // Route de test
 app.get('/', (req, res) => {

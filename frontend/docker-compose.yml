@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:3000
+        - VITE_API_KEY=your-secret-key
+        - VITE_APP_NAME=Board Game Club Manager
+    ports:
+      - "3001:8080"
+    environment:
+      - VITE_API_URL=http://localhost:3000
+      - VITE_API_KEY=your-secret-key
+      - VITE_APP_NAME=Board Game Club Manager
+      - VITE_NODE_ENV=production
+    restart: unless-stopped
+    volumes:
+      - shared-images:/usr/share/nginx/html/images
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - frontend-network
+      - backend_default
+
+  # Service de développement avec hot reload
+  frontend-dev:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3001"
+    environment:
+      - VITE_API_URL=http://localhost:3000
+      - VITE_API_KEY=your-secret-key
+      - VITE_APP_NAME=Board Game Club Manager
+      - VITE_NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+    restart: unless-stopped
+    networks:
+      - frontend-network
+    profiles:
+      - dev
+
+networks:
+  frontend-network:
+    driver: bridge
+  backend_default:
+    external: true
+
+volumes:
+  shared-images:
+    external: true
+    name: backend_shared-images

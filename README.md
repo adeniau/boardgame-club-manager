@@ -1,7 +1,34 @@
-# Board Game Association Management
-(Work in progress)
+# Board Game Club Manager
 
-This application is designed to facilitate the management of a board game association. It allows administrators to efficiently manage games, members, memberships, and loans, while providing useful statistics on all these elements.
+Application de gestion complète pour clubs de jeux de société. Gérez vos jeux, membres, adhésions et emprunts avec une interface moderne et accessible.
+
+## 🚀 Démarrage rapide
+
+```bash
+# Script de démarrage automatique
+./start.sh
+
+# Ou manuellement
+./start.sh backend    # Démarrer le backend
+./start.sh frontend   # Démarrer le frontend
+```
+
+**URLs disponibles :**
+- 🎮 **Frontend** : http://localhost:3001
+- 🔧 **API Backend** : http://localhost:3000
+
+## 📋 État du projet
+
+✅ **Phase 1 - Configuration (Terminée)**
+- Backend Node.js + MariaDB opérationnel
+- Frontend React + TypeScript configuré
+- Docker + Nginx sécurisé
+- Accessibilité RGAA 4.1 complète
+
+🔄 **Phase 2 - À venir**
+- Authentification et sécurité
+- Interface utilisateur complète
+- Gestion des entités (jeux, membres, emprunts)
 
 ## Features
 
@@ -32,10 +59,111 @@ This application is designed to facilitate the management of a board game associ
 - **General Statistics**: Get insights on the number of games, members, memberships, and loans.
 - **Specific Statistics**: Analyze trends like the most borrowed games, periods of high activity, etc.
 
-## Technologies Used
-- **Frontend**: [Indicate the framework or library used, e.g., React, Vue.js]
-- **Backend**: [Indicate the language and framework, e.g., Node.js with Express, Django, etc.]
-- **Database**: [Indicate the technology, e.g., MySQL, MongoDB, etc.]
-- **File Storage**: [Indicate the method, e.g., local storage, AWS S3, etc.]
-- **Others**: [Add any other relevant technology]
+## 🛠️ Technologies utilisées
+
+### Backend
+- **Node.js** + Express.js (API REST)
+- **MariaDB** (Base de données)
+- **JWT** (Authentification)
+- **Multer** (Upload de fichiers)
+- **bcrypt** (Chiffrement des mots de passe)
+
+### Frontend
+- **React 18** + TypeScript
+- **Tailwind CSS** + Radix UI
+- **Vite** (Build tool)
+- **React Router v6**
+- **React Query** (Cache API)
+
+### DevOps & Qualité
+- **Docker** + Docker Compose
+- **Nginx** (Reverse proxy sécurisé)
+- **ESLint** + Prettier
+- **Vitest** (Tests)
+- **Accessibilité RGAA 4.1**
+
+## 📁 Structure du projet
+
+```
+boardgame-club-manager/
+├── backend/                 # API Node.js + Base de données
+│   ├── src/                # Code source API
+│   ├── sql/                # Scripts base de données  
+│   ├── docker-compose.yml  # Backend + MariaDB
+│   └── Dockerfile
+├── frontend/               # Interface React
+│   ├── src/               # Code source frontend
+│   ├── docker-compose.yml # Frontend Nginx
+│   └── Dockerfile
+├── start.sh               # Script de démarrage
+├── DEPLOYMENT.md          # Guide de déploiement
+└── ROADMAP.md            # Plan de développement
+```
+
+## 🚀 Installation & Déploiement
+
+### Prérequis
+- Docker et Docker Compose
+- Ports 3000 et 3001 libres
+
+### Démarrage simple
+```bash
+# Cloner le projet
+git clone <repository-url>
+cd boardgame-club-manager
+
+# Démarrer l'application complète
+./start.sh
+
+# Vérifier le statut
+./start.sh status
+```
+
+### Démarrage manuel
+```bash
+# 1. Démarrer le backend
+cd backend
+docker-compose up -d
+
+# 2. Démarrer le frontend  
+cd ../frontend
+docker-compose up --build -d
+```
+
+Voir [DEPLOYMENT.md](./DEPLOYMENT.md) pour le guide complet.
+
+## 🧪 Tests et Développement
+
+```bash
+# Tests backend
+cd backend
+docker-compose exec app npm test
+
+# Tests frontend avec accessibilité
+cd frontend
+npm test
+npm run test:a11y
+```
+
+## 📞 Support
+
+- 📖 **Documentation** : [DEPLOYMENT.md](./DEPLOYMENT.md)
+- 🛣️ **Roadmap** : [ROADMAP.md](./ROADMAP.md)
+- 🐛 **Issues** : Créer une issue GitHub
+
+## 🔐 Sécurité
+
+- Authentification JWT
+- Headers de sécurité (CSP, HSTS)
+- Validation des données (Zod)
+- Sanitization HTML (DOMPurify)
+- Configuration Nginx sécurisée
+
+## ♿ Accessibilité
+
+- **RGAA 4.1** complètement conforme
+- Navigation clavier complète
+- Screen readers compatibles  
+- Contrastes élevés (4.5:1)
+- Tests automatisés d'accessibilité
 

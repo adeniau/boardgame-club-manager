@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO et accessibilité -->
+    <title>Board Game Club Manager</title>
+    <meta name="description" content="Application de gestion pour club de jeux de société - Gérez vos jeux, membres et emprunts en toute simplicité." />
+    <meta name="keywords" content="jeux de société, club, gestion, emprunts, membres" />
+    <meta name="author" content="Board Game Club Manager" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Board Game Club Manager" />
+    <meta property="og:description" content="Application de gestion pour club de jeux de société" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Accessibilité -->
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="color-scheme" content="light dark" />
+    
+    <!-- Sécurité -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    
+    <!-- Performance -->
+    <link rel="preconnect" href="http://localhost:3000" />
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Skip link pour l'accessibilité -->
+    <style>
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 6px;
+        background: #3b82f6;
+        color: white;
+        padding: 8px;
+        text-decoration: none;
+        z-index: 1000;
+        border-radius: 4px;
+      }
+      .skip-link:focus {
+        top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Skip link pour l'accessibilité -->
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+    
+    <!-- Message pour les navigateurs sans JavaScript -->
+    <noscript>
+      <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 16px; margin: 16px; border-radius: 8px; color: #991b1b;">
+        <h2>JavaScript requis</h2>
+        <p>Cette application nécessite JavaScript pour fonctionner. Veuillez activer JavaScript dans votre navigateur.</p>
+      </div>
+    </noscript>
+    
+    <!-- Conteneur principal de l'application React -->
+    <div id="root" role="application" aria-label="Board Game Club Manager"></div>
+    
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

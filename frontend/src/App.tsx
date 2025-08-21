@@ -10,6 +10,12 @@ import AddGameForm from './components/games/AddGameForm';
 import GameDetail from './components/games/GameDetail';
 import EditGameForm from './components/games/EditGameForm';
 
+// Pages membres
+import MembersPage from './pages/members/MembersPage';
+import AddMemberPage from './pages/members/AddMemberPage';
+import MemberDetailPage from './pages/members/MemberDetailPage';
+import EditMemberPage from './pages/members/EditMemberPage';
+
 // Pages temporaires pour les autres modules
 function GamesPage() {
   return <GamesList />;
@@ -27,22 +33,6 @@ function EditGamePage() {
   return <EditGameForm />;
 }
 
-function MembersPage() {
-  return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-4">Gestion des Membres</h1>
-      <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <div className="text-center py-8 text-gray-500">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-          </svg>
-          <p className="mt-4 text-lg font-medium">Module Membres</p>
-          <p className="text-sm text-gray-400 mt-1">Disponible dans la Phase 4</p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function BorrowingsPage() {
   return (
@@ -135,6 +125,9 @@ function AppRoutes() {
         <Route path="games/:id" element={<GameDetailPage />} />
         <Route path="games/:id/edit" element={<EditGamePage />} />
         <Route path="members" element={<MembersPage />} />
+        <Route path="members/new" element={<AddMemberPage />} />
+        <Route path="members/:id" element={<MemberDetailPage />} />
+        <Route path="members/:id/edit" element={<EditMemberPage />} />
         <Route path="borrowings" element={<BorrowingsPage />} />
         <Route path="seasons" element={<SeasonsPage />} />
       </Route>

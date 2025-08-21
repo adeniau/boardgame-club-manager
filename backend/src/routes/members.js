@@ -29,7 +29,7 @@ router.get('/MemberBorrows/:id', authenticateToken, asyncHandler(async (req, res
     res.success(result);
 }));
 // POST
-router.post('/', authenticateApiKey, multer, asyncHandler(async (req, res) => {
+router.post('/', authenticateToken, multer, asyncHandler(async (req, res) => {
     const memberData = req.body;
     let imageUrl = '';
     
@@ -38,7 +38,7 @@ router.post('/', authenticateApiKey, multer, asyncHandler(async (req, res) => {
         if (!validation.isValid) {
             return res.validationError(validation.errors);
         }
-        imageUrl = ImageService.buildImageUrl(req, req.file.filename);
+        imageUrl = ImageService.buildImagePath(req.file.filename);
     }
     
     const result = await MembersService.createMember({
@@ -60,11 +60,7 @@ router.put('/:id', authenticateToken, multer, asyncHandler(async (req, res) => {
     
     // Gérer la mise à jour de l'image
     const imageResult = await ImageService.handleImageUpdate(req, currentMember.picture);
-    let imageUrl = currentMember.picture; // Conserver l'image actuelle par défaut
-    
-    if (imageResult.hasChanged) {
-        imageUrl = req.file ? ImageService.buildImageUrl(req, req.file.filename) : '';
-    }
+    let imageUrl = imageResult.imagePath; // Utiliser directement le résultat de handleImageUpdate
     
     let result;
     if (imageResult.hasChanged) {

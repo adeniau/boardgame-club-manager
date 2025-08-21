@@ -120,7 +120,7 @@ class ImageService {
                 await this.deleteImage(currentImagePath);
             }
 
-            result.imagePath = this.buildImagePath(req.file.filename);
+            result.imagePath = this.buildImageUrl(req, req.file.filename);
             result.hasChanged = true;
         }
         // Si demande de suppression d'image

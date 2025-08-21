@@ -1,153 +1,103 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../middleware/db');
 const authenticateToken = require('../middleware/auth');
 const authenticateApiKey = require('../middleware/auth_api');
-const bcrypt = require('bcrypt');
 const multer = require('../middleware/multer-config');
-const fs = require('fs');
+const { asyncHandler } = require('../middleware/errorHandler');
+const MembersService = require('../services/membersService');
+const ImageService = require('../services/imageService');
 
 // GET
-router.get('/', authenticateToken, async (req, res) => {
-    try {
-        const result = await db.pool.query("select * from members order by name,firstname");
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.get('/:id', authenticateToken, async (req, res) => {
-    try {
-        const result = await db.pool.query("select * from members where id=?", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.get('/NewMembers/:id', authenticateToken, async (req, res) => {
-    try {
-        const result = await db.pool.query("select * from new_members where id_season=? order by name,firstname", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.get('/MembersBorrows/:id', authenticateToken, async (req, res) => {
-    try {
-        const result = await db.pool.query("select * from members_borrows where id_season=? ", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.get('/MemberBorrows/:id', authenticateToken, async (req, res) => {
-    try {
-        const result = await db.pool.query("select * from members_borrows where id=?", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  // POST
-  router.post('/', authenticateApiKey, multer, async (req, res) => {
-    let members = req.body;
-    let imageURL = "";
+router.get('/', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await MembersService.getAllMembers();
+    res.success(result);
+}));
+router.get('/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await MembersService.getMemberById(req.params.id);
+    res.success(result);
+}));
+router.get('/NewMembers/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await MembersService.getNewMembersBySeason(req.params.id);
+    res.success(result);
+}));
+router.get('/MembersBorrows/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await MembersService.getMembersBorrowsBySeason(req.params.id);
+    res.success(result);
+}));
+router.get('/MemberBorrows/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await MembersService.getMemberBorrows(req.params.id);
+    res.success(result);
+}));
+// POST
+router.post('/', authenticateApiKey, multer, asyncHandler(async (req, res) => {
+    const memberData = req.body;
+    let imageUrl = '';
+    
     if (req.file) {
-        imageURL=`${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+        const validation = ImageService.validateFile(req.file);
+        if (!validation.isValid) {
+            return res.validationError(validation.errors);
+        }
+        imageUrl = ImageService.buildImageUrl(req, req.file.filename);
     }
-    const admin_password = await bcrypt.hash(members.admin_password, 10);
-    if (members.admin == 0) {
-      try {
-        const result = await db.pool.query("insert into members (name,firstname,adress,postal_code,city,email,birth_date,phone_number,picture,admin_password,discord_tag,admin) values (?,?,?,?,?,?,?,?,?,?,?,?)",[members.name,members.firstname,members.adress,members.postal_code,members.city,members.email,members.birth_date,members.phone_number,imageURL,"",members.discord_tag,members.admin]);
-        res.send(result);
-      } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-      }  
-    }
-    else { 
-      try {
-        const result = await db.pool.query("insert into members (name,firstname,adress,postal_code,city,email,birth_date,phone_number,picture,admin_password,discord_tag,admin) values (?,?,?,?,?,?,?,?,?,?,?,?)",[members.name,members.firstname,members.adress,members.postal_code,members.city,members.email,members.birth_date,members.phone_number,imageURL,admin_password,members.discord_tag,members.admin]);
-        res.send(result);
-      } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-      }  
-    }
-     
-  });
-  router.put('/:id', authenticateToken, multer, async (req, res) => {
-      let members = req.body;
-      const admin_password = await bcrypt.hash(members.admin_password, 10);
-      if (members.admin == 0) {
-        if (req.file) {
-          let imageURL=`${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-          try {
-            const result = await db.pool.query("update members set name=?, firstname=?, adress=?,postal_code=?,city=?,email=?,birth_date=?,phone_number=?,picture=?,admin_password=?,discord_tag=?,admin=? where id=?", [members.name,members.firstname,members.adress,members.postal_code,members.city,members.email,members.birth_date,members.phone_number,imageURL,"",members.discord_tag,members.admin,req.params.id]);
-            res.send(result);
-          } catch (err) {
-            console.error(err);
-            res.status(500).json({ message: 'Server Error !' });
-          }
-        }
-        else {
-          try {
-            const result = await db.pool.query("update members set name=?, firstname=?, adress=?,postal_code=?,city=?,email=?,birth_date=?,phone_number=?,admin_password=?,discord_tag=?,admin=? where id=?", [members.name,members.firstname,members.adress,members.postal_code,members.city,members.email,members.birth_date,members.phone_number,"",members.discord_tag,members.admin,req.params.id]);
-            res.send(result);
-          } catch (err) {
-            console.error(err);
-            res.status(500).json({ message: 'Server Error !' });
-          }
-        }
-      }
-      else {
-        if (req.file) {
-          let imageURL=`${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-          try {
-            const result = await db.pool.query("update members set name=?, firstname=?, adress=?,postal_code=?,city=?,email=?,birth_date=?,phone_number=?,picture=?,admin_password=?,discord_tag=?,admin=? where id=?", [members.name,members.firstname,members.adress,members.postal_code,members.city,members.email,members.birth_date,members.phone_number,imageURL,admin_password,members.discord_tag,members.admin,req.params.id]);
-            res.send(result);
-          } catch (err) {
-            console.error(err);
-            res.status(500).json({ message: 'Server Error !' });
-          }
-        }
-        else {
-          try {
-            const result = await db.pool.query("update members set name=?, firstname=?, adress=?,postal_code=?,city=?,email=?,birth_date=?,phone_number=?,admin_password=?,discord_tag=?,admin=? where id=?", [members.name,members.firstname,members.adress,members.postal_code,members.city,members.email,members.birth_date,members.phone_number,admin_password,members.discord_tag,members.admin,req.params.id]);
-            res.send(result);
-          } catch (err) {
-            console.error(err);
-            res.status(500).json({ message: 'Server Error !' });
-          }
-        }
-
-      }
-      
+    
+    const result = await MembersService.createMember({
+        ...memberData,
+        picture: imageUrl
     });
-
-  router.delete('/:id', authenticateToken, async (req, res) => {
-    //let members = req.body;
-    try {
-        const resultselect = await db.pool.query("select picture from games where id=?", [req.params.id]);
-        const filename = resultselect[0].picture.split('/images/')[1];
-        if (filename.length!=0) {
-          fs.unlink(`images/${filename}`,
-            (err => {
-                if (err) console.log(err);
-            }));
-        }
-        const result = await db.pool.query("delete from members where id=?", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
+    
+    res.success(result, 'Membre créé avec succès');
+}));
+router.put('/:id', authenticateToken, multer, asyncHandler(async (req, res) => {
+    const memberId = req.params.id;
+    const memberData = req.body;
+    
+    // Vérifier que le membre existe
+    const currentMember = await MembersService.getMemberById(memberId);
+    if (!currentMember) {
+        return res.notFound('Membre non trouvé');
     }
-  });
+    
+    // Gérer la mise à jour de l'image
+    const imageResult = await ImageService.handleImageUpdate(req, currentMember.picture);
+    let imageUrl = currentMember.picture; // Conserver l'image actuelle par défaut
+    
+    if (imageResult.hasChanged) {
+        imageUrl = req.file ? ImageService.buildImageUrl(req, req.file.filename) : '';
+    }
+    
+    let result;
+    if (imageResult.hasChanged) {
+        result = await MembersService.updateMember(memberId, {
+            ...memberData,
+            picture: imageUrl
+        });
+    } else {
+        result = await MembersService.updateMemberWithoutPicture(memberId, memberData);
+    }
+    
+    res.success(result, 'Membre modifié avec succès');
+}));
+
+router.delete('/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const memberId = req.params.id;
+    
+    // Récupérer les informations du membre avant suppression
+    const member = await MembersService.getMemberById(memberId);
+    if (!member) {
+        return res.notFound('Membre non trouvé');
+    }
+    
+    // Supprimer l'image associée s'il y en a une
+    if (member.picture) {
+        await ImageService.deleteImage(member.picture);
+    }
+    
+    // Supprimer le membre de la base de données
+    const result = await MembersService.deleteMember(memberId);
+    
+    res.success(result, 'Membre supprimé avec succès');
+}));
 
 
 module.exports = router;

@@ -1,14 +1,17 @@
 const express = require('express');
-//const db = require('./middleware/db');
 const bodyParser = require("body-parser");
+const cors = require('cors');
+const responseHelpers = require('./middleware/responseHelpers');
+const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 app.use(express.json());
 
-
-//CORSS
-const cors = require('cors');
+// CORS
 app.use(cors());
+
+// Response helpers middleware
+app.use(responseHelpers);
 /*
 const cors = require('cors');
 const app = express();
@@ -65,8 +68,12 @@ app.get('/', (req, res) => {
 
 
 
+// 404 handler
 app.use((req, res) => {
-    res.json({ message: 'Votre requête a bien été reçue !' }); 
- });
+    res.notFound('Route non trouvée');
+});
+
+// Error handling middleware (must be last)
+app.use(errorHandler);
  
 module.exports = app;

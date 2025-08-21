@@ -1,88 +1,34 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GameFormData } from '../../types/games';
 import { GamesService } from '../../services/gamesService';
+import { useGameForm } from '../../hooks/useGameForm';
+import { useImageUpload } from '../../hooks/useImageUpload';
+import ImageUpload from '../ui/ImageUpload';
+import ErrorAlert from '../ui/ErrorAlert';
 
 export default function AddGameForm() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<GameFormData>({
-    name: '',
-    picture: undefined,
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>('');
-  const [imagePreview, setImagePreview] = useState<string>('');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  
+  const handleSubmitGame = async (formData: any, file?: File) => {
+    await GamesService.createGame({
+      name: formData.name.trim(),
+    }, file);
     
-    if (!formData.name.trim()) {
-      setError('Le nom du jeu est obligatoire');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError('');
-
-      // Créer le jeu avec l'image en une seule fois
-      await GamesService.createGame({
-        name: formData.name.trim(),
-      }, formData.picture);
-
-      // Rediriger vers la liste des jeux
-      navigate('/games');
-    } catch (err) {
-      setError('Erreur lors de la création du jeu');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, name: e.target.value }));
-    if (error) setError('');
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB max
-        setError('L\'image ne doit pas dépasser 5MB');
-        return;
-      }
-
-      if (!file.type.startsWith('image/')) {
-        setError('Veuillez sélectionner un fichier image');
-        return;
-      }
-
-      setFormData(prev => ({ ...prev, picture: file }));
-      
-      // Créer un aperçu
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-      
-      if (error) setError('');
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setFormData(prev => ({ ...prev, picture: undefined }));
-    setImagePreview('');
-    
-    // Reset input file
-    const input = document.getElementById('picture') as HTMLInputElement;
-    if (input) input.value = '';
-  };
-
-  const handleCancel = () => {
     navigate('/games');
   };
+  
+  const { formData, loading, error, handleSubmit, handleNameChange, handleCancel } = useGameForm({
+    onSubmit: handleSubmitGame,
+    onCancel: () => navigate('/games')
+  });
+  
+  const imageUpload = useImageUpload({
+    onError: (error) => console.error('Image error:', error)
+  });
+
+  const onSubmit = (e: React.FormEvent) => {
+    handleSubmit(e, imageUpload.file);
+  };
+
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -93,7 +39,7 @@ export default function AddGameForm() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white shadow-sm rounded-lg border border-gray-200 p-6 space-y-6">
+      <form onSubmit={onSubmit} className="bg-white shadow-sm rounded-lg border border-gray-200 p-6 space-y-6">
         {/* Nom du jeu */}
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
@@ -112,83 +58,19 @@ export default function AddGameForm() {
         </div>
 
         {/* Image du jeu */}
-        <div>
-          <label htmlFor="picture" className="block text-sm font-medium text-gray-700 mb-2">
-            Image du jeu (optionnel)
-          </label>
-          
-          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 transition-colors">
-            <div className="space-y-1 text-center">
-              {imagePreview ? (
-                <div className="space-y-3">
-                  <img
-                    src={imagePreview}
-                    alt="Aperçu"
-                    className="mx-auto h-32 w-32 object-cover rounded-lg"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleRemoveImage}
-                    className="text-sm text-red-600 hover:text-red-800 underline"
-                    disabled={loading}
-                  >
-                    Supprimer l'image
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
-                    stroke="currentColor"
-                    fill="none"
-                    viewBox="0 0 48 48"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <div className="flex text-sm text-gray-600">
-                    <label
-                      htmlFor="picture"
-                      className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
-                    >
-                      <span>Télécharger une image</span>
-                      <input
-                        id="picture"
-                        name="picture"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="sr-only"
-                        disabled={loading}
-                      />
-                    </label>
-                    <p className="pl-1">ou glissez-déposez</p>
-                  </div>
-                  <p className="text-xs text-gray-500">PNG, JPG, JPEG jusqu'à 5MB</p>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+        <ImageUpload
+          preview={imageUpload.preview}
+          file={imageUpload.file}
+          removeImage={imageUpload.removeImage}
+          onChange={imageUpload.handleFileChange}
+          onRemove={imageUpload.handleRemoveImage}
+          onError={(error) => console.error('Image upload error:', error)}
+          disabled={loading}
+          label="Image du jeu (optionnel)"
+        />
 
         {/* Message d'erreur */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex">
-              <svg className="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <div className="ml-3">
-                <p className="text-sm text-red-700">{error}</p>
-              </div>
-            </div>
-          </div>
-        )}
+        <ErrorAlert message={error} />
 
         {/* Boutons d'action */}
         <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">

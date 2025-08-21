@@ -1,164 +1,96 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../middleware/db');
 const authenticateToken = require('../middleware/auth');
 const authenticateApiKey = require('../middleware/auth_api');
 const multer = require('../middleware/multer-config');
-const fs = require('fs');
+const { asyncHandler } = require('../middleware/errorHandler');
+const GamesService = require('../services/gamesService');
+const ImageService = require('../services/imageService');
 
 // GET
-  router.get('/Random/', authenticateApiKey, async (req, res) => {
-    try {
-        const result = await db.pool.query("select g.id, g.name, g.picture from games g, random_game r where g.id=r.random");
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.get('/', authenticateApiKey, async (req, res) => {
-    try {
-        const result = await db.pool.query("select * from games order by name");
-        res.send(result);
-    } catch (err) {
-        console.error(' erreur ');
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.get('/:id', authenticateToken, async (req, res) => {
-    try {
-        const result = await db.pool.query("select * from games where id=?", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.get('/GamesBorrows/:id', authenticateToken, async (req, res) => {
-    try {   
-        const result = await db.pool.query("select * from games_borrows where id_season=?", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(' erreur ');
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.get('/GameBorrows/:id', authenticateToken, async (req, res) => {
-    try {   
-        const result = await db.pool.query("select * from games_borrows where id=?", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(' erreur ');
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  // POST
-  router.post('/', authenticateToken, multer, async (req, res) => {
-    let games = req.body;
-    let imageUrl = "";
-    if (req.file) {
-        imageUrl = `/images/${req.file.filename}`;
-    }
-    try {
-        const result = await db.pool.query("insert into games (name,picture,available) values (?,?,?)", [games.name,imageUrl,games.available]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.put('/:id', authenticateToken, multer, async (req, res) => {
-    let games = req.body;
+router.get('/Random/', authenticateApiKey, asyncHandler(async (req, res) => {
+    const result = await GamesService.getRandomGame();
+    res.success(result);
+}));
+router.get('/', authenticateApiKey, asyncHandler(async (req, res) => {
+    const result = await GamesService.getAllGames();
+    res.success(result);
+}));
+router.get('/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await GamesService.getGameById(req.params.id);
+    res.success(result);
+}));
+router.get('/GamesBorrows/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await GamesService.getGamesBorrowsBySeason(req.params.id);
+    res.success(result);
+}));
+router.get('/GameBorrows/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await GamesService.getGameBorrows(req.params.id);
+    res.success(result);
+}));
+// POST
+router.post('/', authenticateToken, multer, asyncHandler(async (req, res) => {
+    const gameData = req.body;
+    let imageUrl = '';
     
-    try {
-      // Get current game info to handle old image deletion
-      const currentGame = await db.pool.query("select picture from games where id=?", [req.params.id]);
-      let oldImagePath = null;
-      if (currentGame.length > 0 && currentGame[0].picture) {
-        oldImagePath = currentGame[0].picture;
-      }
-
-      if (req.file) {
-        // New image uploaded - delete old image and add new one
-        let imageUrl = `/images/${req.file.filename}`;
-
-        // Delete old image file if it exists
-        if (oldImagePath) {
-          const actualFilename = oldImagePath.includes('/images/') ? oldImagePath.split('/images/')[1] : oldImagePath;
-          if (actualFilename && actualFilename.length > 0) {
-            const localFilepath = `images/${actualFilename}`;
-            
-            if (fs.existsSync(localFilepath)) {
-              fs.unlink(localFilepath, (err) => {
-                if (err) {
-                  console.error(`Error deleting old image ${localFilepath}:`, err);
-                }
-              });
-            }
-          }
+    if (req.file) {
+        const validation = ImageService.validateFile(req.file);
+        if (!validation.isValid) {
+            return res.validationError(validation.errors);
         }
-        
-        const result = await db.pool.query("update games set name=?, picture=?, available=? where id=?", [games.name,imageUrl,games.available,req.params.id]);
-        res.send(result);
-      }
-      else if (games.removeImage === 'true') {
-        // Remove image request - delete file and clear DB
-        if (oldImagePath) {
-          const actualFilename = oldImagePath.includes('/images/') ? oldImagePath.split('/images/')[1] : oldImagePath;
-          if (actualFilename && actualFilename.length > 0) {
-            const localFilepath = `images/${actualFilename}`;
-            
-            if (fs.existsSync(localFilepath)) {
-              fs.unlink(localFilepath, (err) => {
-                if (err) {
-                  console.error(`Error deleting image ${localFilepath}:`, err);
-                }
-              });
-            }
-          }
-        }
-        
-        const result = await db.pool.query("update games set name=?, picture=?, available=? where id=?", [games.name,'',games.available,req.params.id]);
-        res.send(result);
-      }
-      else {
-        // No image change - just update name and availability
-        const result = await db.pool.query("update games set name=?, available=? where id=?", [games.name,games.available,req.params.id]);
-        res.send(result);
-      }
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
+        imageUrl = ImageService.buildImagePath(req.file.filename);
     }
-  });
-  router.delete('/:id', authenticateToken, async (req, res) => {
-    try {
-        const resultselect = await db.pool.query("select picture from games where id=?", [req.params.id]);
-        if (resultselect.length > 0 && resultselect[0].picture) {
-          const filename = resultselect[0].picture;
-          // Check if it's a filename or a URL (backward compatibility)
-          const actualFilename = filename.includes('/images/') ? filename.split('/images/')[1] : filename;
-          if (actualFilename && actualFilename.length > 0) {
-            const localFilepath = `images/${actualFilename}`;
-            
-            if (fs.existsSync(localFilepath)) {
-              fs.unlink(localFilepath, (err) => {
-                if (err) {
-                  console.error('Error deleting file:', err);
-                }
-              });
-            }
-          }
-        }
-        const result = await db.pool.query("delete from games where id=?", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
+    
+    const result = await GamesService.createGame({
+        ...gameData,
+        picture: imageUrl
+    });
+    
+    res.success(result, 'Jeu créé avec succès');
+}));
+router.put('/:id', authenticateToken, multer, asyncHandler(async (req, res) => {
+    const gameId = req.params.id;
+    const gameData = req.body;
+    
+    // Vérifier que le jeu existe
+    const currentGame = await GamesService.getGameById(gameId);
+    if (!currentGame) {
+        return res.notFound('Jeu non trouvé');
     }
-  });
+    
+    // Gérer la mise à jour de l'image
+    const imageResult = await ImageService.handleImageUpdate(req, currentGame.picture);
+    
+    let result;
+    if (imageResult.hasChanged) {
+        result = await GamesService.updateGame(gameId, {
+            ...gameData,
+            picture: imageResult.imagePath
+        });
+    } else {
+        result = await GamesService.updateGameWithoutPicture(gameId, gameData);
+    }
+    
+    res.success(result, 'Jeu modifié avec succès');
+}));
+router.delete('/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const gameId = req.params.id;
+    
+    // Récupérer les informations du jeu avant suppression
+    const game = await GamesService.getGameById(gameId);
+    if (!game) {
+        return res.notFound('Jeu non trouvé');
+    }
+    
+    // Supprimer l'image associée s'il y en a une
+    if (game.picture) {
+        await ImageService.deleteImage(game.picture);
+    }
+    
+    // Supprimer le jeu de la base de données
+    const result = await GamesService.deleteGame(gameId);
+    
+    res.success(result, 'Jeu supprimé avec succès');
+}));
 
 module.exports = router;

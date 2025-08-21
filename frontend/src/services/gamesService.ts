@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Game, GameCreateRequest, GameUpdateRequest } from '../types/games';
+import { ApiResponse } from '../types/api';
 import { AuthService } from './authService';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
@@ -37,8 +38,12 @@ gamesApi.interceptors.response.use(
 export class GamesService {
   static async getAllGames(): Promise<Game[]> {
     try {
-      const response = await gamesApi.get<Game[]>('/games');
-      return response.data;
+      const response = await gamesApi.get<ApiResponse<Game[]>>('/games');
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Erreur lors de la récupération des jeux');
+      }
     } catch (error) {
       console.error('Erreur lors de la récupération des jeux:', error);
       throw new Error('Erreur lors de la récupération des jeux');
@@ -47,15 +52,12 @@ export class GamesService {
 
   static async getGameById(id: number): Promise<Game> {
     try {
-      const response = await gamesApi.get<Game[]>(`/games/${id}`);
-      if (response.data.length === 0) {
-        throw new Error('Jeu non trouvé');
+      const response = await gamesApi.get<ApiResponse<Game>>(`/games/${id}`);
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      } else {
+        throw new Error(response.data.message || 'Jeu non trouvé');
       }
-      const game = response.data[0];
-      if (!game) {
-        throw new Error('Jeu non trouvé');
-      }
-      return game;
     } catch (error) {
       console.error('Erreur lors de la récupération du jeu:', error);
       throw new Error('Erreur lors de la récupération du jeu');
@@ -64,15 +66,14 @@ export class GamesService {
 
   static async getRandomGame(): Promise<Game> {
     try {
-      const response = await gamesApi.get<Game[]>('/games/Random');
-      if (response.data.length === 0) {
-        throw new Error('Aucun jeu trouvé');
+      const response = await gamesApi.get<ApiResponse<Game[]>>('/games/Random');
+      if (response.data.success && response.data.data && response.data.data.length > 0) {
+        const game = response.data.data[0];
+        if (game) {
+          return game;
+        }
       }
-      const game = response.data[0];
-      if (!game) {
-        throw new Error('Aucun jeu trouvé');
-      }
-      return game;
+      throw new Error('Aucun jeu trouvé');
     } catch (error) {
       console.error('Erreur lors de la récupération du jeu aléatoire:', error);
       throw new Error('Erreur lors de la récupération du jeu aléatoire');
@@ -89,7 +90,7 @@ export class GamesService {
         formData.append('image', imageFile);
       }
 
-      const response = await axios.post(
+      const response = await axios.post<ApiResponse<any>>(
         `${API_BASE_URL}/api/games`,
         formData,
         {
@@ -101,12 +102,17 @@ export class GamesService {
         }
       );
 
-      // L'API peut retourner un objet ou un array, on gère les deux cas
-      const game = Array.isArray(response.data) ? response.data[0] : response.data;
-      if (!game) {
-        throw new Error('Réponse invalide du serveur');
+      if (response.data.success && response.data.data) {
+        // Les nouvelles réponses du backend peuvent contenir des metadata
+        const gameData = response.data.data;
+        // Si c'est un objet avec insertId, on fait un appel pour récupérer le jeu créé
+        if (gameData.insertId) {
+          return await this.getGameById(gameData.insertId);
+        }
+        return gameData;
+      } else {
+        throw new Error(response.data.message || 'Erreur lors de la création du jeu');
       }
-      return game;
     } catch (error) {
       console.error('Erreur lors de la création du jeu:', error);
       throw new Error('Erreur lors de la création du jeu');
@@ -125,7 +131,7 @@ export class GamesService {
         formData.append('removeImage', 'true');
       }
 
-      const response = await axios.put(
+      const response = await axios.put<ApiResponse<any>>(
         `${API_BASE_URL}/api/games/${id}`,
         formData,
         {
@@ -137,12 +143,12 @@ export class GamesService {
         }
       );
 
-      // L'API peut retourner un objet ou un array, on gère les deux cas
-      const game = Array.isArray(response.data) ? response.data[0] : response.data;
-      if (!game) {
-        throw new Error('Réponse invalide du serveur');
+      if (response.data.success) {
+        // Après la mise à jour, récupérer le jeu mis à jour
+        return await this.getGameById(id);
+      } else {
+        throw new Error(response.data.message || 'Erreur lors de la modification du jeu');
       }
-      return game;
     } catch (error) {
       console.error('Erreur lors de la modification du jeu:', error);
       throw new Error('Erreur lors de la modification du jeu');
@@ -151,7 +157,10 @@ export class GamesService {
 
   static async deleteGame(id: number): Promise<void> {
     try {
-      await gamesApi.delete(`/games/${id}`);
+      const response = await gamesApi.delete<ApiResponse<any>>(`/games/${id}`);
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Erreur lors de la suppression du jeu');
+      }
     } catch (error) {
       console.error('Erreur lors de la suppression du jeu:', error);
       throw new Error('Erreur lors de la suppression du jeu');

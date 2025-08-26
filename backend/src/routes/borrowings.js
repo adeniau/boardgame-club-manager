@@ -1,85 +1,112 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../middleware/db');
 const authenticateToken = require('../middleware/auth');
 const authenticateApiKey = require('../middleware/auth_api');
+const { asyncHandler } = require('../middleware/errorHandler');
+const BorrowingsService = require('../services/borrowingsService');
+const {
+    validateCreateBorrowing,
+    validateUpdateBorrowing,
+    validateHistoryFilters,
+    validateOverdueThreshold
+} = require('../middleware/borrowingValidator');
 
-// GET
-router.get('/ByMember/:id', authenticateToken, async (req, res) => {
-    try {
-        const result = await db.pool.query("select * from borrowings where id_member=? order by borrow_date desc", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.get('/ByGame/:id', authenticateToken, async (req, res) => {
-    try {
-        const result = await db.pool.query("select * from borrowings where id_game=? order by borrow_date desc", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.get('/CurrentBorrowings/', authenticateApiKey, async (req, res) => {
-    try {
-        const result = await db.pool.query("select * from current_borrowings order by borrow_date desc");
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.get('/TotalBorrowings/:id', authenticateToken, async (req, res) => {
-    try {
-        const result = await db.pool.query("select * from total_borrows where id_season=?", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.get('/TotalGames/:id', authenticateToken, async (req, res) => {
-    try {
-        const result = await db.pool.query("select * from total_games_borrows where id_season=?", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  // POST
-  router.post('/', authenticateToken, async (req, res) => {
-    let borrowings = req.body;
-    try {
-        const result = await db.pool.query("insert into borrowings (id_season,id_member,id_game,borrow_date) values (?,?,?,?)", [borrowings.id_season,borrowings.id_member,borrowings.id_game,borrowings.borrow_date]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
-  router.put('/:id', authenticateToken, async (req, res) => {
-    let borrowings = req.body;
-    try {
-        const result = await db.pool.query("update borrowings set return_date=?,comment=? where id=?", [borrowings.return_date,borrowings.comment,req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
-    }
-  });
+// GET - Emprunts par membre
+router.get('/ByMember/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await BorrowingsService.getBorrowingsByMember(req.params.id);
+    res.success(result, 'Emprunts du membre recuperes avec succes');
+}));
+// GET - Emprunts par jeu
+router.get('/ByGame/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await BorrowingsService.getBorrowingsByGame(req.params.id);
+    res.success(result, 'Emprunts du jeu recuperes avec succes');
+}));
+// GET - Emprunts en cours avec details
+router.get('/CurrentBorrowings/', authenticateApiKey, asyncHandler(async (req, res) => {
+    const result = await BorrowingsService.getCurrentBorrowings();
+    res.success(result, 'Emprunts en cours recuperes avec succes');
+}));
+// GET - Statistiques d'emprunts par saison
+router.get('/TotalBorrowings/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await BorrowingsService.getTotalBorrowingsBySeason(req.params.id);
+    res.success(result, 'Statistiques d\'emprunts recuperees avec succes');
+}));
+// GET - Statistiques de jeux par saison
+router.get('/TotalGames/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await BorrowingsService.getTotalGamesBorrowingsBySeason(req.params.id);
+    res.success(result, 'Statistiques de jeux recuperees avec succes');
+}));
 
-  router.delete('/:id', authenticateToken, async (req, res) => {
-    try {
-        const result = await db.pool.query("delete from borrowings where id=?", [req.params.id]);
-        res.send(result);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server Error !' });
+// GET - Historique complet avec filtres
+router.get('/History', authenticateToken, asyncHandler(async (req, res) => {
+    const validation = validateHistoryFilters(req.query);
+    if (!validation.isValid) {
+        return res.validationError(validation.errors);
     }
-  });
+    
+    const result = await BorrowingsService.getBorrowingsHistory(req.query);
+    res.success(result, 'Historique des emprunts recupere avec succes');
+}));
+
+// GET - Statistiques rapides
+router.get('/Stats', authenticateToken, asyncHandler(async (req, res) => {
+    const result = await BorrowingsService.getBorrowingStats();
+    res.success(result, 'Statistiques des emprunts recuperees avec succes');
+}));
+
+// GET - Emprunts en retard
+router.get('/Overdue', authenticateToken, asyncHandler(async (req, res) => {
+    const validation = validateOverdueThreshold(req.query.threshold);
+    if (!validation.isValid) {
+        return res.validationError(validation.errors);
+    }
+    
+    const result = await BorrowingsService.getOverdueBorrowings(validation.value);
+    res.success(result, 'Emprunts en retard recuperes avec succes');
+}));
+// POST - Creer un nouvel emprunt
+router.post('/', authenticateToken, asyncHandler(async (req, res) => {
+    // Valider les donnees d'entree
+    const validation = validateCreateBorrowing(req.body);
+    if (!validation.isValid) {
+        return res.validationError(validation.errors);
+    }
+    
+    const result = await BorrowingsService.createBorrowing(req.body);
+    res.success(result, 'Emprunt cree avec succes');
+}));
+// PUT - Mettre a jour un emprunt (principalement pour les retours)
+router.put('/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const borrowingId = req.params.id;
+    
+    // Valider les donnees d'entree
+    const validation = validateUpdateBorrowing(req.body);
+    if (!validation.isValid) {
+        return res.validationError(validation.errors);
+    }
+    
+    // Verifier que l'emprunt existe
+    const exists = await BorrowingsService.borrowingExists(borrowingId);
+    if (!exists) {
+        return res.notFound('Emprunt non trouve');
+    }
+    
+    const result = await BorrowingsService.updateBorrowing(borrowingId, req.body);
+    res.success(result, 'Emprunt mis a jour avec succes');
+}));
+
+// DELETE - Supprimer un emprunt
+router.delete('/:id', authenticateToken, asyncHandler(async (req, res) => {
+    const borrowingId = req.params.id;
+    
+    // Verifier que l'emprunt existe
+    const exists = await BorrowingsService.borrowingExists(borrowingId);
+    if (!exists) {
+        return res.notFound('Emprunt non trouve');
+    }
+    
+    const result = await BorrowingsService.deleteBorrowing(borrowingId);
+    res.success(result, 'Emprunt supprime avec succes');
+}));
 
 module.exports = router;

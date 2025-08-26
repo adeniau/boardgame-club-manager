@@ -5,3 +5,5 @@ help.txt
 backend/docker-compose.yml
 backend/sql/first_script.sh
 backend/sql/initialize.sql
+backend/images/*
+frontend/images/*

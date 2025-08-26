@@ -6,9 +6,11 @@ interface GameCardProps {
   game: Game;
   onEdit?: (game: Game) => void;
   onDelete?: (game: Game) => void;
+  onBorrow?: (game: Game) => void;
+  onReturn?: (game: Game) => void;
 }
 
-export default function GameCard({ game, onEdit, onDelete }: GameCardProps) {
+export default function GameCard({ game, onEdit, onDelete, onBorrow, onReturn }: GameCardProps) {
   const imageUrl = GamesService.getImageUrl(game.picture);
   const isAvailable = game.available === 1 || game.available === '1';
 
@@ -66,6 +68,34 @@ export default function GameCard({ game, onEdit, onDelete }: GameCardProps) {
           </Link>
 
           <div className="flex items-center space-x-2">
+            {/* Bouton emprunter - visible seulement si le jeu est disponible et que la fonction est fournie */}
+            {onBorrow && isAvailable && (
+              <button
+                onClick={() => onBorrow(game)}
+                className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200"
+                title="Emprunter le jeu"
+                aria-label={`Emprunter le jeu ${game.name}`}
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </button>
+            )}
+
+            {/* Bouton rendre - visible seulement si le jeu est emprunté et que la fonction est fournie */}
+            {onReturn && !isAvailable && (
+              <button
+                onClick={() => onReturn(game)}
+                className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors duration-200"
+                title="Rendre le jeu"
+                aria-label={`Rendre le jeu ${game.name}`}
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 102.828-2.828L8.414 12l3.828-3.828a2 2 0 10-2.828-2.828L3 12z" />
+                </svg>
+              </button>
+            )}
+
             {onEdit && (
               <button
                 onClick={() => onEdit(game)}

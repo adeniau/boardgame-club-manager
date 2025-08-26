@@ -6,28 +6,19 @@ class BorrowingsService {
      * Recuperer tous les emprunts en cours avec details des membres et jeux
      */
     static async getCurrentBorrowings() {
+        // Utiliser la vue existante pour compatibilite avec l'ancienne structure
         const result = await db.pool.query(`
             SELECT 
-                b.id,
-                b.id_season,
-                b.id_member,
-                b.id_game,
-                b.borrow_date,
-                b.return_date,
-                b.comment,
-                m.firstname as member_firstname,
-                m.name as member_lastname,
-                m.email as member_email,
-                m.phone as member_phone,
-                m.picture as member_picture,
-                g.name as game_name,
-                g.picture as game_picture,
-                g.available as game_available
-            FROM borrowings b
-            JOIN members m ON b.id_member = m.id
-            JOIN games g ON b.id_game = g.id
-            WHERE b.return_date IS NULL
-            ORDER BY b.borrow_date DESC
+                id,
+                id_season,
+                borrow_date,
+                name as member_lastname,
+                firstname as member_firstname,
+                picture as member_picture,
+                game_name,
+                game_picture
+            FROM current_borrowings
+            ORDER BY borrow_date DESC
         `);
         return result;
     }
@@ -92,7 +83,7 @@ class BorrowingsService {
                 m.firstname as member_firstname,
                 m.name as member_lastname,
                 m.email as member_email,
-                m.phone as member_phone,
+                m.phone_number as member_phone,
                 m.picture as member_picture,
                 g.name as game_name,
                 g.picture as game_picture,
@@ -358,7 +349,7 @@ class BorrowingsService {
                 m.firstname as member_firstname,
                 m.name as member_lastname,
                 m.email as member_email,
-                m.phone as member_phone,
+                m.phone_number as member_phone,
                 g.name as game_name,
                 DATEDIFF(CURDATE(), b.borrow_date) as days_borrowed
             FROM borrowings b

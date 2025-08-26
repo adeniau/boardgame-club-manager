@@ -16,6 +16,9 @@ import AddMemberPage from './pages/members/AddMemberPage';
 import MemberDetailPage from './pages/members/MemberDetailPage';
 import EditMemberPage from './pages/members/EditMemberPage';
 
+// Pages emprunts
+import BorrowingsPage from './pages/borrowings/BorrowingsPage';
+
 // Pages temporaires pour les autres modules
 function GamesPage() {
   return <GamesList />;
@@ -34,22 +37,6 @@ function EditGamePage() {
 }
 
 
-function BorrowingsPage() {
-  return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-4">Gestion des Emprunts</h1>
-      <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <div className="text-center py-8 text-gray-500">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-          </svg>
-          <p className="mt-4 text-lg font-medium">Module Emprunts</p>
-          <p className="text-sm text-gray-400 mt-1">Disponible dans la Phase 5</p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function SeasonsPage() {
   return (

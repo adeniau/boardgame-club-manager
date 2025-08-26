@@ -2,7 +2,216 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Game, GameFilters } from '../../types/games';
 import { GamesService } from '../../services/gamesService';
+import { BorrowingsService } from '../../services/borrowingsService';
+import { MembersService } from '../../services/membersService';
+import { SeasonsService } from '../../services/seasonsService';
+import { Member } from '../../types/members';
+import { CurrentBorrowing } from '../../types/borrowings';
 import GameCard from './GameCard';
+
+// Modal d'emprunt rapide
+function QuickBorrowModal({ 
+  game, 
+  members, 
+  currentSeason, 
+  onConfirm, 
+  onCancel 
+}: {
+  game: Game;
+  members: Member[];
+  currentSeason: any;
+  onConfirm: (memberId: number, borrowDate: string) => void;
+  onCancel: () => void;
+}) {
+  const [selectedMemberId, setSelectedMemberId] = useState<number>(0);
+  const [borrowDate, setBorrowDate] = useState<string>(new Date().toISOString().split('T')[0] || '');
+  const [memberSearch, setMemberSearch] = useState<string>('');
+
+  const filteredMembers = members.filter(member => 
+    `${member.firstname || ''} ${member.name || ''}`.toLowerCase().includes(memberSearch.toLowerCase())
+  );
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedMemberId > 0 && borrowDate) {
+      onConfirm(selectedMemberId, borrowDate);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-medium text-gray-900">Emprunt rapide</h3>
+            <button onClick={onCancel} className="text-gray-400 hover:text-gray-600">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="mb-4">
+            <p className="text-sm text-gray-600">
+              Jeu: <span className="font-medium">{game.name}</span>
+            </p>
+            {currentSeason && (
+              <p className="text-sm text-gray-600">
+                Saison: <span className="font-medium">{currentSeason.year}</span>
+              </p>
+            )}
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Membre
+              </label>
+              <input
+                type="text"
+                placeholder="Rechercher un membre..."
+                value={memberSearch}
+                onChange={(e) => setMemberSearch(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-2"
+              />
+              <select
+                value={selectedMemberId}
+                onChange={(e) => setSelectedMemberId(Number(e.target.value))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              >
+                <option value={0}>Sélectionnez un membre</option>
+                {filteredMembers.map(member => (
+                  <option key={member.id} value={member.id}>
+                    {member.firstname} {member.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Date d'emprunt
+              </label>
+              <input
+                type="date"
+                value={borrowDate}
+                onChange={(e) => setBorrowDate(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+
+            <div className="flex justify-end space-x-3 pt-4">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Annuler
+              </button>
+              <button
+                type="submit"
+                disabled={selectedMemberId === 0 || !borrowDate}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                Emprunter
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Modal de retour rapide
+function QuickReturnModal({ 
+  game, 
+  borrowing, 
+  onConfirm, 
+  onCancel 
+}: {
+  game: Game;
+  borrowing?: CurrentBorrowing;
+  onConfirm: (comment: string) => void;
+  onCancel: () => void;
+}) {
+  const [comment, setComment] = useState<string>('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onConfirm(comment);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-medium text-gray-900">Retour rapide</h3>
+            <button onClick={onCancel} className="text-gray-400 hover:text-gray-600">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="mb-4">
+            <p className="text-sm text-gray-600">
+              Jeu: <span className="font-medium">{game.name}</span>
+            </p>
+            {borrowing && (
+              <p className="text-sm text-gray-600">
+                Emprunté par: <span className="font-medium">
+                  {borrowing.member_firstname || ''} {borrowing.member_lastname || ''}
+                </span>
+              </p>
+            )}
+            {borrowing && (
+              <p className="text-sm text-gray-600">
+                Date d'emprunt: <span className="font-medium">
+                  {new Date(borrowing.borrow_date).toLocaleDateString('fr-FR')}
+                </span>
+              </p>
+            )}
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Commentaire (optionnel)
+              </label>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="État du jeu, remarques..."
+              />
+            </div>
+
+            <div className="flex justify-end space-x-3 pt-4">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Annuler
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700"
+              >
+                Rendre
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function GamesList() {
   const navigate = useNavigate();
@@ -14,6 +223,11 @@ export default function GamesList() {
     search: '',
     availability: 'all',
   });
+  const [members, setMembers] = useState<Member[]>([]);
+  const [currentBorrowings, setCurrentBorrowings] = useState<CurrentBorrowing[]>([]);
+  const [currentSeason, setCurrentSeason] = useState<any>(null);
+  const [showQuickBorrow, setShowQuickBorrow] = useState<Game | null>(null);
+  const [showQuickReturn, setShowQuickReturn] = useState<Game | null>(null);
 
   useEffect(() => {
     loadGames();
@@ -27,8 +241,17 @@ export default function GamesList() {
     try {
       setLoading(true);
       setError('');
-      const gamesData = await GamesService.getAllGames();
+      const [gamesData, membersData, borrowingsData, seasonsData] = await Promise.all([
+        GamesService.getAllGames(),
+        MembersService.getAllMembers().catch(() => []),
+        BorrowingsService.getCurrentBorrowings().catch(() => []),
+        SeasonsService.getCurrentSeason().catch(() => null)
+      ]);
+      
       setGames(gamesData);
+      setMembers(membersData);
+      setCurrentBorrowings(borrowingsData);
+      setCurrentSeason(seasonsData);
     } catch (err) {
       setError('Erreur lors du chargement des jeux');
       console.error(err);
@@ -91,6 +314,57 @@ export default function GamesList() {
         alert('Erreur lors de la suppression du jeu');
         console.error(err);
       }
+    }
+  };
+
+  const handleBorrowGame = (game: Game) => {
+    setShowQuickBorrow(game);
+  };
+
+  const handleReturnGame = (game: Game) => {
+    setShowQuickReturn(game);
+  };
+
+  const handleQuickBorrow = async (memberId: number, borrowDate: string) => {
+    if (!showQuickBorrow || !currentSeason) return;
+
+    try {
+      await BorrowingsService.createBorrowing({
+        id_season: currentSeason.id,
+        id_member: memberId,
+        id_game: showQuickBorrow.id,
+        borrow_date: borrowDate
+      });
+      
+      setShowQuickBorrow(null);
+      await loadGames(); // Recharger pour mettre à jour la disponibilité
+    } catch (err) {
+      alert('Erreur lors de la création de l\'emprunt');
+      console.error(err);
+    }
+  };
+
+  const handleQuickReturn = async (comment: string) => {
+    if (!showQuickReturn) return;
+
+    // Trouver l'emprunt en cours pour ce jeu
+    const borrowing = currentBorrowings.find(b => b.id_game === showQuickReturn.id);
+    if (!borrowing) {
+      alert('Aucun emprunt en cours trouvé pour ce jeu');
+      return;
+    }
+
+    try {
+      await BorrowingsService.returnBorrowing(borrowing.id, {
+        return_date: new Date().toISOString().split('T')[0] || '',
+        comment
+      });
+      
+      setShowQuickReturn(null);
+      await loadGames(); // Recharger pour mettre à jour la disponibilité
+    } catch (err) {
+      alert('Erreur lors du retour de l\'emprunt');
+      console.error(err);
     }
   };
 
@@ -231,9 +505,32 @@ export default function GamesList() {
               game={game}
               onEdit={handleEditGame}
               onDelete={handleDeleteGame}
+              onBorrow={handleBorrowGame}
+              onReturn={handleReturnGame}
             />
           ))}
         </div>
+      )}
+
+      {/* Modal d'emprunt rapide */}
+      {showQuickBorrow && (
+        <QuickBorrowModal
+          game={showQuickBorrow}
+          members={members}
+          currentSeason={currentSeason}
+          onConfirm={handleQuickBorrow}
+          onCancel={() => setShowQuickBorrow(null)}
+        />
+      )}
+
+      {/* Modal de retour rapide */}
+      {showQuickReturn && (
+        <QuickReturnModal
+          game={showQuickReturn}
+          borrowing={currentBorrowings.find(b => b.id_game === showQuickReturn.id) || undefined}
+          onConfirm={handleQuickReturn}
+          onCancel={() => setShowQuickReturn(null)}
+        />
       )}
     </div>
   );

@@ -6,11 +6,18 @@ Application de gestion complète pour clubs de jeux de société. Gérez vos jeu
 
 ```bash
 # Script de démarrage automatique
-./start.sh
+./scripts/start.sh
 
-# Ou manuellement
-./start.sh backend    # Démarrer le backend
-./start.sh frontend   # Démarrer le frontend
+# Options disponibles
+./scripts/start.sh all        # Démarrer backend + frontend (défaut)
+./scripts/start.sh backend    # Démarrer uniquement le backend
+./scripts/start.sh frontend   # Démarrer uniquement le frontend
+./scripts/start.sh status     # Voir l'état des services
+./scripts/start.sh stop       # Arrêter tous les services
+./scripts/start.sh restart    # Redémarrer tous les services
+
+# Pour un redémarrage rapide après modifications
+./scripts/restart.sh
 ```
 
 **URLs disponibles :**
@@ -95,7 +102,11 @@ boardgame-club-manager/
 │   ├── src/               # Code source frontend
 │   ├── docker-compose.yml # Frontend Nginx
 │   └── Dockerfile
-├── start.sh               # Script de démarrage
+├── scripts/               # Scripts utilitaires
+│   ├── start.sh           # Script de démarrage principal
+│   ├── restart.sh         # Redémarrage rapide
+│   ├── import_test_data.sh # Import des données de test
+│   └── download_images.sh # Téléchargement d'images
 ├── DEPLOYMENT.md          # Guide de déploiement
 └── ROADMAP.md            # Plan de développement
 ```
@@ -113,10 +124,13 @@ git clone <repository-url>
 cd boardgame-club-manager
 
 # Démarrer l'application complète
-./start.sh
+./scripts/start.sh
 
 # Vérifier le statut
-./start.sh status
+./scripts/start.sh status
+
+# Redémarrer après modifications du code
+./scripts/restart.sh
 ```
 
 ### Démarrage manuel
@@ -131,6 +145,37 @@ docker-compose up --build -d
 ```
 
 Voir [DEPLOYMENT.md](./DEPLOYMENT.md) pour le guide complet.
+
+## 🛠️ Scripts utilitaires
+
+### Scripts de gestion
+```bash
+# Démarrer l'application (backend + frontend)
+./scripts/start.sh
+
+# Redémarrer avec reconstruction des images
+./scripts/restart.sh
+
+# Télécharger des images de placeholder pour les jeux
+./scripts/download_images.sh
+
+# Importer des données de test
+./scripts/import_test_data.sh
+```
+
+### Commandes utiles
+```bash
+# Voir les logs en temps réel
+cd backend && docker-compose logs -f
+cd frontend && docker-compose logs -f
+
+# Accéder au container backend pour debug
+cd backend && docker-compose exec app bash
+
+# Nettoyer les containers et volumes
+docker-compose down -v
+docker system prune -a
+```
 
 ## 🧪 Tests et Développement
 

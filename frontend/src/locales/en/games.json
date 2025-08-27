@@ -1,0 +1,91 @@
+{
+  "title": "Games management",
+  "subtitle": "Manage your board game collection",
+  "add_game": "Add game",
+  "edit_game": "Edit game",
+  "game_details": "Game details",
+  "no_games": "No games in collection",
+  "search_games": "Search games...",
+  "fields": {
+    "name": "Game name",
+    "picture": "Picture",
+    "available": "Available",
+    "status": "Status",
+    "description": "Description",
+    "category": "Category",
+    "min_players": "Min players",
+    "max_players": "Max players",
+    "duration": "Duration (min)",
+    "age": "Minimum age",
+    "difficulty": "Difficulty"
+  },
+  "status": {
+    "available": "Available",
+    "borrowed": "Borrowed",
+    "maintenance": "Under maintenance",
+    "lost": "Lost"
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "borrow": "Borrow",
+    "return": "Return",
+    "mark_available": "Mark available",
+    "mark_unavailable": "Mark unavailable"
+  },
+  "filters": {
+    "all": "All",
+    "available": "Available",
+    "borrowed": "Borrowed",
+    "category": "Category",
+    "players": "Number of players",
+    "duration": "Duration",
+    "age": "Age"
+  },
+  "sort": {
+    "name": "Name",
+    "popularity": "Popularity",
+    "newest": "Newest",
+    "availability": "Availability"
+  },
+  "stats": {
+    "total": "Total",
+    "available": "Available",
+    "borrowed": "Borrowed",
+    "popularity": "Popularity"
+  },
+  "borrowing": {
+    "current_borrower": "Borrowed by",
+    "borrowed_date": "Borrowed date",
+    "expected_return": "Expected return",
+    "overdue": "Overdue",
+    "history": "Borrowing history"
+  },
+  "messages": {
+    "added": "Game added successfully",
+    "updated": "Game updated successfully",
+    "deleted": "Game deleted successfully",
+    "error_add": "Error adding game",
+    "error_update": "Error updating game",
+    "error_delete": "Error deleting game",
+    "confirm_delete": "Are you sure you want to delete this game?",
+    "game_borrowed": "This game is currently borrowed",
+    "game_available": "This game is available"
+  },
+  "validation": {
+    "name_required": "Game name is required",
+    "name_too_long": "Name cannot exceed 100 characters",
+    "invalid_players": "Invalid number of players",
+    "invalid_duration": "Invalid duration",
+    "invalid_age": "Invalid age"
+  },
+  "image": {
+    "upload": "Upload image",
+    "change": "Change image",
+    "remove": "Remove image",
+    "preview": "Preview",
+    "formats": "Accepted formats: JPG, PNG, GIF",
+    "max_size": "Max size: 5MB"
+  }
+}

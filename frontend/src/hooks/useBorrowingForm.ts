@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { BorrowingCreateRequest, BorrowingFormData } from '../types/borrowings';
 import { Member } from '../types/members';
 import { Game } from '../types/games';
-import { SeasonsService, Season } from '../services/seasonsService';
+import { SeasonsService } from '../services/seasonsService';
+import { Season } from '../types/seasons';
 
 interface UseBorrowingFormOptions {
   onError?: (error: string) => void;

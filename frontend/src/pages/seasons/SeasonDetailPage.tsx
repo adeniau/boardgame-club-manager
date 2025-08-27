@@ -19,7 +19,7 @@ import { useNotifications } from '../../context/NotificationContext';
 const SeasonDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { addToast } = useNotifications();
+  const { showToast } = useNotifications();
   
   const [season, setSeason] = useState<Season | null>(null);
   const [stats, setStats] = useState<SeasonStats | null>(null);
@@ -59,11 +59,11 @@ const SeasonDetailPage: React.FC = () => {
 
     try {
       await SeasonsService.deleteSeason(season.id);
-      addToast({ type: 'success', message: 'Saison supprimée avec succès' });
+      showToast({ type: 'success', title: 'Succès', message: 'Saison supprimée avec succès' });
       navigate('/seasons');
     } catch (error) {
       console.error('Erreur lors de la suppression de la saison:', error);
-      addToast({ type: 'error', message: 'Erreur lors de la suppression de la saison' });
+      showToast({ type: 'error', title: 'Erreur', message: 'Erreur lors de la suppression de la saison' });
     }
   };
 
@@ -142,11 +142,11 @@ const SeasonDetailPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex items-center text-sm text-gray-500">
             <CalendarIcon className="h-5 w-5 mr-2" />
-            <span>Début: {formatDate(season.start_date)}</span>
+            <span>Début: {season.start_date ? formatDate(season.start_date) : 'Non définie'}</span>
           </div>
           <div className="flex items-center text-sm text-gray-500">
             <CalendarIcon className="h-5 w-5 mr-2" />
-            <span>Fin: {formatDate(season.end_date)}</span>
+            <span>Fin: {season.end_date ? formatDate(season.end_date) : 'Non définie'}</span>
           </div>
         </div>
       </div>
@@ -240,13 +240,13 @@ const SeasonDetailPage: React.FC = () => {
       {/* Modal de confirmation de suppression */}
       <ConfirmationModal
         isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
+        onCancel={() => setShowDeleteModal(false)}
         onConfirm={handleDelete}
         title="Supprimer la saison"
         message={`Êtes-vous sûr de vouloir supprimer la saison "${season.name}" ? Cette action est irréversible.`}
         confirmText="Supprimer"
         cancelText="Annuler"
-        type="danger"
+        confirmVariant="danger"
       />
     </div>
   );

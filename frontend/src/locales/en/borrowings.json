@@ -1,0 +1,117 @@
+{
+  "title": "Borrowings management",
+  "subtitle": "Track game borrowings and returns",
+  "new_borrowing": "New borrowing",
+  "return_game": "Return game",
+  "borrowing_history": "Borrowing history",
+  "current_borrowings": "Current borrowings",
+  "no_borrowings": "No borrowings",
+  "no_current_borrowings": "No current borrowings",
+  "search_borrowings": "Search borrowings...",
+  "fields": {
+    "member": "Member",
+    "game": "Game",
+    "borrow_date": "Borrow date",
+    "return_date": "Return date",
+    "expected_return": "Expected return",
+    "duration": "Duration",
+    "comment": "Comment",
+    "season": "Season",
+    "status": "Status"
+  },
+  "status": {
+    "active": "Active",
+    "returned": "Returned",
+    "overdue": "Overdue",
+    "lost": "Lost"
+  },
+  "actions": {
+    "borrow": "Borrow",
+    "return": "Return",
+    "extend": "Extend",
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "mark_lost": "Mark lost",
+    "contact_member": "Contact member"
+  },
+  "filters": {
+    "all": "All",
+    "active": "Active",
+    "returned": "Returned",
+    "overdue": "Overdue",
+    "this_season": "This season",
+    "member": "Member",
+    "game": "Game"
+  },
+  "sort": {
+    "borrow_date": "Borrow date",
+    "return_date": "Return date",
+    "member_name": "Member name",
+    "game_name": "Game name",
+    "duration": "Duration"
+  },
+  "stats": {
+    "total": "Total",
+    "active": "Active",
+    "returned": "Returned",
+    "overdue": "Overdue",
+    "average_duration": "Average duration",
+    "most_borrowed": "Most borrowed"
+  },
+  "duration": {
+    "days": "{count} day(s)",
+    "weeks": "{count} week(s)",
+    "overdue_days": "{count} day(s) overdue"
+  },
+  "form": {
+    "select_member": "Select member",
+    "select_game": "Select game",
+    "borrow_date": "Borrow date",
+    "expected_return": "Expected return",
+    "comment": "Comment (optional)",
+    "return_date": "Return date",
+    "return_comment": "Return comment"
+  },
+  "messages": {
+    "borrowed": "Game borrowed successfully",
+    "returned": "Game returned successfully",
+    "extended": "Borrowing extended successfully",
+    "updated": "Borrowing updated successfully",
+    "deleted": "Borrowing deleted successfully",
+    "error_borrow": "Error borrowing game",
+    "error_return": "Error returning game",
+    "error_update": "Error updating borrowing",
+    "error_delete": "Error deleting borrowing",
+    "confirm_delete": "Are you sure you want to delete this borrowing?",
+    "confirm_return": "Confirm return of this game?",
+    "game_not_available": "This game is not available",
+    "member_not_active": "This member is not active",
+    "already_borrowed": "This game is already borrowed",
+    "overdue_warning": "Warning: this borrowing is overdue"
+  },
+  "validation": {
+    "member_required": "Member required",
+    "game_required": "Game required",
+    "borrow_date_required": "Borrow date required",
+    "return_date_invalid": "Invalid return date",
+    "return_before_borrow": "Return date cannot be before borrow date",
+    "future_borrow_date": "Borrow date cannot be in the future"
+  },
+  "notifications": {
+    "overdue_title": "Overdue borrowings",
+    "overdue_message": "{count} overdue borrowing(s)",
+    "reminder_title": "Return reminder",
+    "reminder_message": "Don't forget to return {game}",
+    "new_borrowing": "New borrowing: {member} borrowed {game}",
+    "game_returned": "Return: {member} returned {game}"
+  },
+  "reports": {
+    "title": "Borrowing reports",
+    "monthly": "Monthly report",
+    "seasonal": "Seasonal report",
+    "member_activity": "Member activity",
+    "game_popularity": "Game popularity",
+    "overdue_report": "Overdue report"
+  }
+}

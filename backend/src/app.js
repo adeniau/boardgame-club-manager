@@ -90,6 +90,7 @@ app.use((req, res) => {
 });
 
 // Error handling middleware (must be last)
+const { errorHandler } = require('./middleware/errorHandler');
 app.use(errorHandler);
  
 module.exports = app;

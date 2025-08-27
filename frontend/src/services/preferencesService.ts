@@ -8,7 +8,8 @@ import {
   ShortcutsUpdateRequest,
   Theme,
   Language,
-  NotificationType
+  NotificationType,
+  DashboardWidget
 } from '../types/preferences';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
@@ -40,35 +41,15 @@ class PreferencesService {
       }
 
       return data.data || {
-        language: 'fr' as const,
-        theme: 'system' as const,
-        timezone: 'Europe/Paris',
-        dateFormat: 'DD/MM/YYYY',
-        timeFormat: '24h',
-        currency: 'EUR',
-        notifications: {
-          enabled: true,
-          email: true,
-          browser: true,
-          sound: false,
-          types: {
-            borrowings: true,
-            returns: true,
-            system: true,
-            reminders: true
-          }
-        },
-        privacy: {
-          showActivity: true,
-          showStats: true,
-          allowAnalytics: false
-        },
-        accessibility: {
-          highContrast: false,
-          largeText: false,
-          reducedMotion: false,
-          screenReader: false
-        }
+        language: 'fr' as Language,
+        theme: 'auto' as Theme,
+        notifications_enabled: true,
+        notification_types: ['borrowing', 'return', 'overdue'] as NotificationType[],
+        keyboard_shortcuts_enabled: true,
+        custom_shortcuts: {},
+        dashboard_widgets: ['stats', 'recent', 'popular', 'charts'] as DashboardWidget[],
+        items_per_page: 10,
+        date_format: 'dd/mm/yyyy' as const
       };
     } catch (error) {
       console.error('Error fetching preferences:', error);

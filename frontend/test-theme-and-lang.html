@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theme and Language Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['class']
+    }
+  </script>
+  <style>
+    /* CSS Variables for Theme */
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --border-primary: #e2e8f0;
+    }
+    .dark {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --border-primary: #374151;
+    }
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background-color 0.3s, color 0.3s;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-8">
+  <div class="max-w-4xl mx-auto">
+    <header class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-600 rounded-lg p-4 mb-8">
+      <div class="flex items-center justify-between">
+        <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
+          Board Game Club Manager - Theme & Language Test
+        </h1>
+        
+        <div class="flex items-center space-x-4">
+          <!-- Theme Toggle -->
+          <button 
+            id="theme-toggle"
+            class="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+            title="Toggle theme"
+          >
+            <svg id="sun-icon" class="h-5 w-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg id="moon-icon" class="h-5 w-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+          
+          <!-- Language Toggle -->
+          <button 
+            id="lang-toggle"
+            class="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+            title="Toggle language"
+          >
+            <span id="flag" class="text-sm font-medium">🇫🇷</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="space-y-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4" id="welcome-title">
+          Bienvenue dans le gestionnaire de club
+        </h2>
+        <p class="text-gray-600 dark:text-gray-300 mb-4" id="welcome-text">
+          Cette page teste les fonctionnalités de thème sombre/clair et de changement de langue.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-900 dark:text-white mb-2" id="theme-title">Thème actuel</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300" id="theme-info">
+              Clair - Cliquez sur l'icône soleil/lune pour changer
+            </p>
+          </div>
+          
+          <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+            <h3 class="font-medium text-gray-900 dark:text-white mb-2" id="lang-title">Langue actuelle</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300" id="lang-info">
+              Français - Cliquez sur le drapeau pour changer
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4" id="test-elements-title">
+          Éléments de test
+        </h3>
+        
+        <div class="space-y-4">
+          <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors" id="test-button">
+            Bouton de test
+          </button>
+          
+          <div class="flex items-center space-x-4">
+            <input type="text" id="test-input" placeholder="Champ de texte de test" class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select class="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="test-select">
+              <option>Option 1</option>
+              <option>Option 2</option>
+            </select>
+          </div>
+          
+          <div class="bg-green-100 dark:bg-green-900 border border-green-300 dark:border-green-700 text-green-800 dark:text-green-100 px-4 py-3 rounded-lg" id="success-message">
+            Message de succès - Les couleurs s'adaptent au thème
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Translations
+    const translations = {
+      fr: {
+        welcome_title: "Bienvenue dans le gestionnaire de club",
+        welcome_text: "Cette page teste les fonctionnalités de thème sombre/clair et de changement de langue.",
+        theme_title: "Thème actuel",
+        theme_light: "Clair - Cliquez sur l'icône soleil/lune pour changer",
+        theme_dark: "Sombre - Cliquez sur l'icône soleil/lune pour changer",
+        lang_title: "Langue actuelle",
+        lang_info_fr: "Français - Cliquez sur le drapeau pour changer",
+        lang_info_en: "Anglais - Cliquez sur le drapeau pour changer",
+        test_elements_title: "Éléments de test",
+        test_button: "Bouton de test",
+        test_input_placeholder: "Champ de texte de test",
+        success_message: "Message de succès - Les couleurs s'adaptent au thème"
+      },
+      en: {
+        welcome_title: "Welcome to the club manager",
+        welcome_text: "This page tests dark/light theme and language switching features.",
+        theme_title: "Current theme",
+        theme_light: "Light - Click the sun/moon icon to change",
+        theme_dark: "Dark - Click the sun/moon icon to change",
+        lang_title: "Current language",
+        lang_info_fr: "French - Click the flag to change",
+        lang_info_en: "English - Click the flag to change",
+        test_elements_title: "Test elements",
+        test_button: "Test button",
+        test_input_placeholder: "Test text field",
+        success_message: "Success message - Colors adapt to theme"
+      }
+    };
+
+    // State
+    let currentLang = 'fr';
+    let currentTheme = 'light';
+
+    // Theme toggle
+    function toggleTheme() {
+      currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+      const html = document.documentElement;
+      
+      if (currentTheme === 'dark') {
+        html.classList.remove('light');
+        html.classList.add('dark');
+      } else {
+        html.classList.remove('dark');
+        html.classList.add('light');
+      }
+      
+      updateThemeInfo();
+    }
+
+    // Language toggle
+    function toggleLanguage() {
+      currentLang = currentLang === 'fr' ? 'en' : 'fr';
+      updateTexts();
+      updateFlag();
+    }
+
+    // Update theme info
+    function updateThemeInfo() {
+      const themeInfo = document.getElementById('theme-info');
+      const key = currentTheme === 'light' ? 'theme_light' : 'theme_dark';
+      themeInfo.textContent = translations[currentLang][key];
+    }
+
+    // Update flag
+    function updateFlag() {
+      const flag = document.getElementById('flag');
+      flag.textContent = currentLang === 'fr' ? '🇫🇷' : '🇬🇧';
+      
+      const langInfo = document.getElementById('lang-info');
+      const key = currentLang === 'fr' ? 'lang_info_fr' : 'lang_info_en';
+      langInfo.textContent = translations[currentLang][key];
+    }
+
+    // Update all texts
+    function updateTexts() {
+      const elements = [
+        'welcome-title', 'welcome-text', 'theme-title', 'lang-title',
+        'test-elements-title', 'test-button', 'success-message'
+      ];
+      
+      elements.forEach(id => {
+        const element = document.getElementById(id);
+        const key = id.replace('-', '_');
+        if (element && translations[currentLang][key]) {
+          element.textContent = translations[currentLang][key];
+        }
+      });
+      
+      // Update placeholder
+      const testInput = document.getElementById('test-input');
+      testInput.placeholder = translations[currentLang]['test_input_placeholder'];
+      
+      updateThemeInfo();
+    }
+
+    // Event listeners
+    document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+    document.getElementById('lang-toggle').addEventListener('click', toggleLanguage);
+
+    // Initialize
+    updateTexts();
+  </script>
+</body>
+</html>

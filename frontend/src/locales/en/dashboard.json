@@ -1,0 +1,72 @@
+{
+  "title": "Dashboard",
+  "welcome": "Welcome to the board game club manager",
+  "overview": "Overview",
+  "stats": {
+    "title": "Statistics",
+    "total_games": "Total games",
+    "available_games": "Available games",
+    "total_members": "Total members",
+    "active_borrowings": "Active borrowings",
+    "this_season": "This season",
+    "all_time": "All time"
+  },
+  "recent_activity": {
+    "title": "Recent activity",
+    "no_activity": "No recent activity",
+    "borrowed": "{member} borrowed {game}",
+    "returned": "{member} returned {game}",
+    "joined": "{member} joined the club",
+    "added_game": "Game {game} was added",
+    "view_all": "View all"
+  },
+  "popular_games": {
+    "title": "Popular games",
+    "this_month": "This month",
+    "this_season": "This season",
+    "all_time": "All time",
+    "no_data": "No data available",
+    "times_borrowed": "{count} borrowing(s)",
+    "view_game": "View game"
+  },
+  "charts": {
+    "title": "Charts and trends",
+    "borrowings_over_time": "Borrowings over time",
+    "member_activity": "Member activity",
+    "game_popularity": "Game popularity",
+    "seasonal_trends": "Seasonal trends",
+    "monthly": "Monthly",
+    "weekly": "Weekly",
+    "daily": "Daily"
+  },
+  "quick_actions": {
+    "title": "Quick actions",
+    "add_game": "Add game",
+    "add_member": "Add member",
+    "new_borrowing": "New borrowing",
+    "return_game": "Return game",
+    "view_reports": "View reports"
+  },
+  "notifications": {
+    "title": "Recent notifications",
+    "overdue": "{count} overdue borrowing(s)",
+    "new_members": "{count} new member(s)",
+    "mark_read": "Mark as read",
+    "view_all": "View all"
+  },
+  "seasonal_info": {
+    "current_season": "Current season",
+    "season_stats": "Season statistics",
+    "members_count": "{count} member(s)",
+    "borrowings_count": "{count} borrowing(s)",
+    "games_borrowed": "{count} games borrowed"
+  },
+  "widgets": {
+    "customize": "Customize",
+    "add_widget": "Add widget",
+    "remove_widget": "Remove widget",
+    "move_up": "Move up",
+    "move_down": "Move down",
+    "reset_layout": "Reset layout"
+  }
+}

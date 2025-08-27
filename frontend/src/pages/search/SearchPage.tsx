@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { ChevronLeftIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import { useSearch } from '../../hooks/search';
-import { EntityType, QuickSearchFilters, BorrowingMetadata, SeasonMetadata } from '../../types/search';
+import { EntityType, QuickSearchFilters, BorrowingMetadata, SeasonMetadata, GameMetadata, MemberMetadata } from '../../types/search';
 import { SearchBar, SearchResults, SearchFilters } from '../../components/search';
 import { exportToCSV } from '../../utils/csvExport';
 
@@ -97,16 +97,18 @@ const SearchPage: React.FC = () => {
       // Add type-specific data
       switch (result.type) {
         case 'game':
+          const gameMetadata = result.metadata as GameMetadata;
           return {
             ...baseData,
-            Disponible: result.metadata.available === '1' ? 'Oui' : 'Non',
-            Image: result.metadata.picture || ''
+            Disponible: gameMetadata.available === '1' ? 'Oui' : 'Non',
+            Image: gameMetadata.picture || ''
           };
         case 'member':
+          const memberMetadata = result.metadata as MemberMetadata;
           return {
             ...baseData,
-            Email: result.metadata.email,
-            Administrateur: result.metadata.isAdmin ? 'Oui' : 'Non'
+            Email: memberMetadata.email,
+            Administrateur: memberMetadata.isAdmin ? 'Oui' : 'Non'
           };
         case 'borrowing': {
           const metadata = result.metadata as BorrowingMetadata;

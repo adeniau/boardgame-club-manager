@@ -7,3 +7,24 @@ backend/sql/first_script.sh
 backend/sql/initialize.sql
 backend/images/*
 frontend/images/*
+
+# Database backups
+backend/backup_*.sql
+backend/*.sql.backup
+
+# Test files
+backend/test.*
+backend/src/test.*
+
+# Temporary images
+**/test.png
+**/test2.png
+**/test*.jpg
+
+# Development tools
+.playwright-mcp/
+**/screenshots/
+
+# Temp scripts
+*_fixed.sh
+quick_*.sh

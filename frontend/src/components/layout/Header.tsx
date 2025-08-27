@@ -39,7 +39,7 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
           <button
             onClick={onToggleSidebar}
             className="lg:hidden p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-            aria-label={isSidebarOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+            aria-label={isSidebarOpen ? t('common.accessibility.close_menu') : t('common.accessibility.open_menu')}
             aria-expanded={isSidebarOpen}
             aria-controls="sidebar"
           >
@@ -59,7 +59,7 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
           </button>
 
           <h1 className="text-xl font-semibold text-gray-900 dark:text-white hidden sm:block">
-            Board Game Club Manager
+            {t('common.navigation.home')} - Board Game Club Manager
           </h1>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-white sm:hidden">
             BGCM
@@ -90,7 +90,7 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
           <button
             onClick={toggleTheme}
             className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-            title={effectiveTheme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+            title={effectiveTheme === 'dark' ? t('preferences.appearance.theme.light') : t('preferences.appearance.theme.dark')}
           >
             {effectiveTheme === 'dark' ? (
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,10 +114,10 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
           <button
             onClick={handleLanguageToggle}
             className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-            title={language === 'fr' ? 'Switch to English' : 'Passer en français'}
+            title={language === 'fr' ? 'Switch to English' : 'Switch to French'}
           >
             <span className="text-sm font-medium">
-              {language === 'fr' ? '🇫🇷' : '🇺🇸'}
+              {language === 'fr' ? '🇫🇷' : '🇬🇧'}
             </span>
           </button>
 
@@ -128,7 +128,7 @@ export default function Header({ onToggleSidebar, isSidebarOpen }: HeaderProps) 
               className="flex items-center space-x-2 p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             >
               <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300">
-                <span>Bienvenue, {user?.email}</span>
+                <span>{t('common.welcome')}, {user?.email}</span>
               </div>
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />

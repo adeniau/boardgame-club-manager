@@ -1,0 +1,114 @@
+{
+  "title": "Members management",
+  "subtitle": "Manage your club members",
+  "add_member": "Add member",
+  "edit_member": "Edit member",
+  "member_details": "Member details",
+  "no_members": "No members in the club",
+  "search_members": "Search members...",
+  "fields": {
+    "name": "Last name",
+    "firstname": "First name",
+    "email": "Email",
+    "phone_number": "Phone",
+    "address": "Address",
+    "postal_code": "Postal code",
+    "city": "City",
+    "birth_date": "Birth date",
+    "picture": "Photo",
+    "discord_tag": "Discord",
+    "membership": "Membership",
+    "deposit": "Deposit",
+    "admin": "Administrator"
+  },
+  "membership": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending",
+    "expired": "Expired",
+    "current_season": "Current season",
+    "join_season": "Join season",
+    "leave_season": "Leave season"
+  },
+  "deposit": {
+    "paid": "Paid",
+    "unpaid": "Unpaid",
+    "amount": "Amount",
+    "date_paid": "Date paid"
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "make_admin": "Make admin",
+    "remove_admin": "Remove admin",
+    "contact": "Contact"
+  },
+  "filters": {
+    "all": "All",
+    "active": "Active",
+    "inactive": "Inactive",
+    "admin": "Administrators",
+    "current_season": "Current season",
+    "with_deposit": "Deposit paid",
+    "without_deposit": "Deposit unpaid"
+  },
+  "sort": {
+    "name": "Last name",
+    "firstname": "First name",
+    "join_date": "Join date",
+    "activity": "Activity"
+  },
+  "stats": {
+    "total": "Total",
+    "active": "Active",
+    "new_this_season": "New this season",
+    "with_deposits": "Deposits paid"
+  },
+  "borrowing_stats": {
+    "current_borrowings": "Current borrowings",
+    "total_borrowings": "Total borrowings",
+    "favorite_games": "Favorite games",
+    "last_activity": "Last activity"
+  },
+  "contact": {
+    "send_email": "Send email",
+    "call": "Call",
+    "discord": "Contact on Discord"
+  },
+  "messages": {
+    "added": "Member added successfully",
+    "updated": "Member updated successfully",
+    "deleted": "Member deleted successfully",
+    "activated": "Member activated successfully",
+    "deactivated": "Member deactivated successfully",
+    "error_add": "Error adding member",
+    "error_update": "Error updating member",
+    "error_delete": "Error deleting member",
+    "confirm_delete": "Are you sure you want to delete this member?",
+    "has_active_borrowings": "This member has active borrowings",
+    "admin_rights_granted": "Administrator rights granted",
+    "admin_rights_revoked": "Administrator rights revoked"
+  },
+  "validation": {
+    "name_required": "Last name is required",
+    "firstname_required": "First name is required",
+    "email_required": "Email is required",
+    "email_invalid": "Invalid email format",
+    "phone_invalid": "Invalid phone format",
+    "postal_code_invalid": "Invalid postal code",
+    "birth_date_invalid": "Invalid birth date",
+    "birth_date_future": "Birth date cannot be in the future",
+    "age_too_young": "Minimum age is 13 years"
+  },
+  "photo": {
+    "upload": "Upload photo",
+    "change": "Change photo",
+    "remove": "Remove photo",
+    "preview": "Preview",
+    "formats": "Accepted formats: JPG, PNG",
+    "max_size": "Max size: 2MB"
+  }
+}

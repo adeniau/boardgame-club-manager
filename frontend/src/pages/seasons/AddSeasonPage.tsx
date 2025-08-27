@@ -1,22 +1,22 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import SeasonForm from '../../components/seasons/SeasonForm';
-import { CreateSeasonRequest } from '../../types/seasons';
+import { CreateSeasonRequest, UpdateSeasonRequest } from '../../types/seasons';
 import { SeasonsService } from '../../services/seasonsService';
 import { useNotifications } from '../../context/NotificationContext';
 
 const AddSeasonPage: React.FC = () => {
   const navigate = useNavigate();
-  const { addToast } = useNotifications();
+  const { showToast } = useNotifications();
 
-  const handleSubmit = async (data: CreateSeasonRequest): Promise<void> => {
+  const handleSubmit = async (data: CreateSeasonRequest | UpdateSeasonRequest): Promise<void> => {
     try {
-      await SeasonsService.createSeason(data);
-      addToast({ type: 'success', message: 'Saison créée avec succès' });
+      await SeasonsService.createSeason(data as CreateSeasonRequest);
+      showToast({ type: 'success', title: 'Succès', message: 'Saison créée avec succès' });
       navigate('/seasons');
     } catch (error) {
       console.error('Erreur lors de la création de la saison:', error);
-      addToast({ type: 'error', message: 'Erreur lors de la création de la saison' });
+      showToast({ type: 'error', title: 'Erreur', message: 'Erreur lors de la création de la saison' });
     }
   };
 

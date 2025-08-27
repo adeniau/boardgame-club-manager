@@ -1,0 +1,80 @@
+{
+  "general": {
+    "unexpected": "An unexpected error occurred",
+    "network": "Network connection error",
+    "timeout": "Request timeout",
+    "server_error": "Server error",
+    "not_found": "Resource not found",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Access forbidden",
+    "validation": "Validation error",
+    "try_again": "Please try again",
+    "contact_admin": "Contact administrator if the problem persists"
+  },
+  "auth": {
+    "login_failed": "Login failed",
+    "invalid_credentials": "Invalid credentials",
+    "session_expired": "Session expired, please login again",
+    "access_denied": "Access denied",
+    "password_required": "Password required",
+    "email_required": "Email address required"
+  },
+  "api": {
+    "connection_failed": "Unable to connect to server",
+    "invalid_response": "Invalid server response",
+    "rate_limit": "Too many requests, please wait",
+    "maintenance": "Service under maintenance"
+  },
+  "forms": {
+    "required_field": "This field is required",
+    "invalid_email": "Invalid email address",
+    "invalid_phone": "Invalid phone number",
+    "invalid_date": "Invalid date",
+    "file_too_large": "File too large",
+    "invalid_file_type": "Unsupported file type",
+    "upload_failed": "Upload failed"
+  },
+  "games": {
+    "not_found": "Game not found",
+    "already_exists": "A game with this name already exists",
+    "not_available": "Game not available",
+    "delete_failed": "Unable to delete game",
+    "update_failed": "Unable to update game",
+    "has_active_borrowings": "This game has active borrowings"
+  },
+  "members": {
+    "not_found": "Member not found",
+    "email_exists": "This email address is already in use",
+    "delete_failed": "Unable to delete member",
+    "update_failed": "Unable to update member",
+    "has_active_borrowings": "This member has active borrowings",
+    "not_active": "Member not active"
+  },
+  "borrowings": {
+    "not_found": "Borrowing not found",
+    "already_returned": "This game has already been returned",
+    "game_not_available": "This game is not available",
+    "member_not_active": "This member is not active",
+    "return_failed": "Unable to return game",
+    "borrow_failed": "Unable to borrow game",
+    "already_borrowed": "This member has already borrowed this game"
+  },
+  "preferences": {
+    "load_failed": "Unable to load preferences",
+    "save_failed": "Unable to save preferences",
+    "reset_failed": "Unable to reset preferences",
+    "invalid_theme": "Invalid theme",
+    "invalid_language": "Invalid language"
+  },
+  "notifications": {
+    "permission_denied": "Permission denied for notifications",
+    "not_supported": "Notifications not supported by this browser",
+    "send_failed": "Failed to send notification"
+  },
+  "offline": {
+    "title": "Offline",
+    "message": "You are currently offline",
+    "retry": "Retry",
+    "cached_data": "Showing cached data"
+  }
+}

@@ -32,7 +32,8 @@
     "back": "Back",
     "next": "Next",
     "previous": "Previous",
-    "load_more": "Load more"
+    "load_more": "Load more",
+    "search": "Search"
   },
   "status": {
     "loading": "Loading...",
@@ -103,5 +104,6 @@
     "search_results": "Search results",
     "sort_by": "Sort by",
     "filter_by": "Filter by"
-  }
+  },
+  "welcome": "Welcome"
 }

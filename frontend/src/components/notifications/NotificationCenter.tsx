@@ -118,6 +118,7 @@ const NotificationCenter: React.FC<NotificationCenterExtendedProps> = ({
       element.addEventListener('scroll', handleScroll);
       return () => element.removeEventListener('scroll', handleScroll);
     }
+    return undefined;
   }, [handleScroll]);
 
   return (

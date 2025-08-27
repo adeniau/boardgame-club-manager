@@ -74,7 +74,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
       setFiltersState(mergedFilters);
     } catch (error) {
       // Only show error toast if it's not an authentication error
-      if (!error.message?.includes('Authentication required')) {
+      if (!(error instanceof Error && error.message?.includes('Authentication required'))) {
         console.error('Error fetching notifications:', error);
         showToast({
           type: 'error',
@@ -332,7 +332,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
       setUnreadCount(count);
     } catch (error) {
       // Silently handle authentication errors to prevent console spam
-      if (!error.message?.includes('Authentication required')) {
+      if (!(error instanceof Error && error.message?.includes('Authentication required'))) {
         console.error('Error updating unread count:', error);
       }
     }

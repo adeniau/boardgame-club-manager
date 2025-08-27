@@ -18,6 +18,9 @@ var pool =
 // Expose a method to establish connection with MariaDB
 module.exports = Object.freeze({
   pool: pool,
+  getConnection: async () => {
+    return await pool.getConnection();
+  },
   query: async (sql, params) => {
     let conn;
     try {

@@ -10,7 +10,7 @@ import { useNotifications } from '../../context/NotificationContext';
 const EditSeasonPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { addToast } = useNotifications();
+  const { showToast } = useNotifications();
   
   const [season, setSeason] = useState<Season | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,11 +43,11 @@ const EditSeasonPage: React.FC = () => {
 
     try {
       await SeasonsService.updateSeason(season.id, data);
-      addToast({ type: 'success', message: 'Saison modifiée avec succès' });
+      showToast({ type: 'success', title: 'Succès', message: 'Saison modifiée avec succès' });
       navigate('/seasons');
     } catch (error) {
       console.error('Erreur lors de la modification de la saison:', error);
-      addToast({ type: 'error', message: 'Erreur lors de la modification de la saison' });
+      showToast({ type: 'error', title: 'Erreur', message: 'Erreur lors de la modification de la saison' });
     }
   };
 
@@ -93,7 +93,7 @@ const EditSeasonPage: React.FC = () => {
           <SeasonForm 
             initialData={{
               name: season.name,
-              description: season.description,
+              description: season.description || undefined,
               start_date: season.start_date ? season.start_date.split('T')[0] : undefined,
               end_date: season.end_date ? season.end_date.split('T')[0] : undefined
             }}

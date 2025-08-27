@@ -1,0 +1,164 @@
+{
+  "title": "Notifications",
+  "unread": "non lue",
+  "unreadCount": {
+    "zero": "Aucune notification",
+    "one": "1 notification non lue",
+    "other": "{count} notifications non lues"
+  },
+  "types": {
+    "borrowing": "Emprunt",
+    "return": "Retour",
+    "overdue": "Retard",
+    "reminder": "Rappel",
+    "system": "Système",
+    "success": "Succès",
+    "warning": "Avertissement",
+    "error": "Erreur"
+  },
+  "priorities": {
+    "low": "Faible",
+    "normal": "Normal",
+    "high": "Élevée",
+    "urgent": "Urgente"
+  },
+  "actions": {
+    "markAsRead": "Marquer comme lue",
+    "markAllAsRead": "Tout marquer comme lu",
+    "delete": "Supprimer",
+    "deleteAll": "Tout supprimer",
+    "refresh": "Actualiser",
+    "filter": "Filtrer",
+    "view": "Voir",
+    "close": "Fermer",
+    "dismiss": "Ignorer"
+  },
+  "filters": {
+    "title": "Filtres",
+    "type": "Type",
+    "status": "Statut",
+    "priority": "Priorité",
+    "allTypes": "Tous les types",
+    "allStatuses": "Toutes",
+    "allPriorities": "Toutes les priorités",
+    "unreadOnly": "Non lues",
+    "readOnly": "Lues",
+    "apply": "Appliquer",
+    "reset": "Réinitialiser"
+  },
+  "messages": {
+    "noNotifications": "Aucune notification",
+    "noNotificationsDescription": "Vous n'avez aucune notification pour le moment.",
+    "allNotificationsRead": "Toutes les notifications ont été marquées comme lues",
+    "allNotificationsDeleted": "Toutes les notifications ont été supprimées",
+    "notificationDeleted": "Notification supprimée",
+    "notificationMarkedAsRead": "Notification marquée comme lue",
+    "errorLoading": "Erreur lors du chargement des notifications",
+    "errorMarkingAsRead": "Erreur lors du marquage comme lue",
+    "errorDeleting": "Erreur lors de la suppression",
+    "confirmDeleteAll": "Êtes-vous sûr de vouloir supprimer toutes les notifications ?",
+    "loadMore": "Charger plus",
+    "endOfList": "Toutes les notifications ont été chargées",
+    "loading": "Chargement..."
+  },
+  "timeago": {
+    "now": "À l'instant",
+    "minutesAgo": {
+      "one": "Il y a 1 minute",
+      "other": "Il y a {count} minutes"
+    },
+    "hoursAgo": {
+      "one": "Il y a 1 heure",
+      "other": "Il y a {count} heures"
+    },
+    "daysAgo": {
+      "one": "Il y a 1 jour",
+      "other": "Il y a {count} jours"
+    },
+    "weeksAgo": {
+      "one": "Il y a 1 semaine",
+      "other": "Il y a {count} semaines"
+    }
+  },
+  "dateGroups": {
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "thisWeek": "Cette semaine",
+    "lastWeek": "La semaine dernière",
+    "thisMonth": "Ce mois-ci",
+    "lastMonth": "Le mois dernier"
+  },
+  "toasts": {
+    "newNotification": "Nouvelle notification",
+    "notificationCreated": "Notification créée avec succès",
+    "systemNotificationCreated": "Notification système créée",
+    "overdueCheckCompleted": "Vérification des retards effectuée",
+    "dueSoonCheckCompleted": "Vérification des échéances proches effectuée",
+    "expiredNotificationsCleared": "Notifications expirées supprimées"
+  },
+  "borrowings": {
+    "newBorrowing": {
+      "title": "Nouvel emprunt",
+      "message": "{memberName} a emprunté le jeu \"{gameName}\""
+    },
+    "return": {
+      "title": "Retour de jeu",
+      "message": "{memberName} a rendu le jeu \"{gameName}\""
+    },
+    "overdue": {
+      "title": "Emprunt en retard",
+      "message": "L'emprunt du jeu \"{gameName}\" par {memberName} est en retard"
+    },
+    "dueSoon": {
+      "title": "Retour prévu demain",
+      "message": "N'oubliez pas de rendre \"{gameName}\" demain"
+    },
+    "reminder": {
+      "title": "Rappel d'emprunt",
+      "message": "Pensez à rendre \"{gameName}\" bientôt"
+    }
+  },
+  "system": {
+    "seasonChange": {
+      "title": "Nouvelle saison",
+      "message": "La saison {seasonName} est maintenant active"
+    },
+    "maintenance": {
+      "title": "Maintenance programmée",
+      "message": "Maintenance du système prévue le {date}"
+    },
+    "featureUpdate": {
+      "title": "Nouvelle fonctionnalité",
+      "message": "De nouvelles fonctionnalités sont disponibles"
+    },
+    "dataExport": {
+      "title": "Export terminé",
+      "message": "Export terminé - {recordCount} enregistrements"
+    },
+    "newMember": {
+      "title": "Nouveau membre",
+      "message": "Nouveau membre inscrit : {memberName}"
+    },
+    "gameAdded": {
+      "title": "Nouveau jeu",
+      "message": "Nouveau jeu ajouté : {gameName}"
+    },
+    "systemAlert": {
+      "title": "Alerte système",
+      "message": "Attention : {alertMessage}"
+    }
+  },
+  "aria": {
+    "notificationButton": "Notifications, {count} non lues",
+    "notificationItem": "Notification : {title}. {message}. {timeago}",
+    "markAsReadButton": "Marquer la notification comme lue",
+    "deleteButton": "Supprimer la notification",
+    "viewButton": "Voir les détails de la notification",
+    "closeButton": "Fermer les notifications",
+    "filterButton": "Filtrer les notifications",
+    "refreshButton": "Actualiser les notifications",
+    "menuButton": "Menu des actions",
+    "toast": "Toast notification : {title}",
+    "toastDismiss": "Ignorer la notification toast"
+  }
+}

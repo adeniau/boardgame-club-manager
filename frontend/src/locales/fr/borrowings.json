@@ -1,0 +1,117 @@
+{
+  "title": "Gestion des emprunts",
+  "subtitle": "Suivez les emprunts et retours de jeux",
+  "new_borrowing": "Nouvel emprunt",
+  "return_game": "Retourner un jeu",
+  "borrowing_history": "Historique des emprunts",
+  "current_borrowings": "Emprunts en cours",
+  "no_borrowings": "Aucun emprunt",
+  "no_current_borrowings": "Aucun emprunt en cours",
+  "search_borrowings": "Rechercher dans les emprunts...",
+  "fields": {
+    "member": "Membre",
+    "game": "Jeu",
+    "borrow_date": "Date d'emprunt",
+    "return_date": "Date de retour",
+    "expected_return": "Retour prévu",
+    "duration": "Durée",
+    "comment": "Commentaire",
+    "season": "Saison",
+    "status": "Statut"
+  },
+  "status": {
+    "active": "En cours",
+    "returned": "Rendu",
+    "overdue": "En retard",
+    "lost": "Perdu"
+  },
+  "actions": {
+    "borrow": "Emprunter",
+    "return": "Retourner",
+    "extend": "Prolonger",
+    "view": "Voir",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "mark_lost": "Marquer perdu",
+    "contact_member": "Contacter le membre"
+  },
+  "filters": {
+    "all": "Tous",
+    "active": "En cours",
+    "returned": "Rendus",
+    "overdue": "En retard",
+    "this_season": "Cette saison",
+    "member": "Membre",
+    "game": "Jeu"
+  },
+  "sort": {
+    "borrow_date": "Date d'emprunt",
+    "return_date": "Date de retour",
+    "member_name": "Nom du membre",
+    "game_name": "Nom du jeu",
+    "duration": "Durée"
+  },
+  "stats": {
+    "total": "Total",
+    "active": "En cours",
+    "returned": "Rendus",
+    "overdue": "En retard",
+    "average_duration": "Durée moyenne",
+    "most_borrowed": "Plus empruntés"
+  },
+  "duration": {
+    "days": "{count} jour(s)",
+    "weeks": "{count} semaine(s)",
+    "overdue_days": "En retard de {count} jour(s)"
+  },
+  "form": {
+    "select_member": "Sélectionner un membre",
+    "select_game": "Sélectionner un jeu",
+    "borrow_date": "Date d'emprunt",
+    "expected_return": "Retour prévu",
+    "comment": "Commentaire (optionnel)",
+    "return_date": "Date de retour",
+    "return_comment": "Commentaire de retour"
+  },
+  "messages": {
+    "borrowed": "Jeu emprunté avec succès",
+    "returned": "Jeu retourné avec succès",
+    "extended": "Emprunt prolongé avec succès",
+    "updated": "Emprunt mis à jour avec succès",
+    "deleted": "Emprunt supprimé avec succès",
+    "error_borrow": "Erreur lors de l'emprunt",
+    "error_return": "Erreur lors du retour",
+    "error_update": "Erreur lors de la mise à jour",
+    "error_delete": "Erreur lors de la suppression",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer cet emprunt ?",
+    "confirm_return": "Confirmer le retour de ce jeu ?",
+    "game_not_available": "Ce jeu n'est pas disponible",
+    "member_not_active": "Ce membre n'est pas actif",
+    "already_borrowed": "Ce jeu est déjà emprunté",
+    "overdue_warning": "Attention: cet emprunt est en retard"
+  },
+  "validation": {
+    "member_required": "Membre obligatoire",
+    "game_required": "Jeu obligatoire",
+    "borrow_date_required": "Date d'emprunt obligatoire",
+    "return_date_invalid": "Date de retour invalide",
+    "return_before_borrow": "La date de retour ne peut pas être antérieure à la date d'emprunt",
+    "future_borrow_date": "La date d'emprunt ne peut pas être dans le futur"
+  },
+  "notifications": {
+    "overdue_title": "Emprunts en retard",
+    "overdue_message": "{count} emprunt(s) en retard",
+    "reminder_title": "Rappel de retour",
+    "reminder_message": "N'oubliez pas de retourner {game}",
+    "new_borrowing": "Nouvel emprunt: {member} a emprunté {game}",
+    "game_returned": "Retour: {member} a rendu {game}"
+  },
+  "reports": {
+    "title": "Rapports d'emprunts",
+    "monthly": "Rapport mensuel",
+    "seasonal": "Rapport saisonnier",
+    "member_activity": "Activité des membres",
+    "game_popularity": "Popularité des jeux",
+    "overdue_report": "Rapport des retards"
+  }
+}

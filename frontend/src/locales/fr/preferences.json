@@ -1,0 +1,171 @@
+{
+  "title": "Préférences",
+  "subtitle": "Personnalisez votre expérience",
+  "tabs": {
+    "general": "Général",
+    "appearance": "Apparence",
+    "notifications": "Notifications",
+    "shortcuts": "Raccourcis",
+    "dashboard": "Tableau de bord",
+    "privacy": "Confidentialité"
+  },
+  "general": {
+    "title": "Préférences générales",
+    "language": {
+      "title": "Langue",
+      "description": "Choisissez votre langue préférée"
+    },
+    "date_format": {
+      "title": "Format de date",
+      "description": "Format d'affichage des dates"
+    },
+    "items_per_page": {
+      "title": "Éléments par page",
+      "description": "Nombre d'éléments affichés par page dans les listes"
+    }
+  },
+  "appearance": {
+    "title": "Apparence",
+    "theme": {
+      "title": "Thème",
+      "description": "Choisissez l'apparence de l'application",
+      "light": "Clair",
+      "dark": "Sombre",
+      "auto": "Automatique"
+    },
+    "theme_description": {
+      "light": "Utilise un thème clair",
+      "dark": "Utilise un thème sombre",
+      "auto": "S'adapte aux préférences système"
+    },
+    "preview": "Aperçu",
+    "current_theme": "Thème actuel: {theme}"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "enable": {
+      "title": "Activer les notifications",
+      "description": "Recevez des notifications pour les événements importants"
+    },
+    "types": {
+      "title": "Types de notifications",
+      "description": "Choisissez les types de notifications que vous souhaitez recevoir",
+      "borrowing": "Nouveaux emprunts",
+      "return": "Retours de jeux",
+      "overdue": "Emprunts en retard",
+      "reminders": "Rappels"
+    },
+    "browser": {
+      "title": "Notifications du navigateur",
+      "description": "Afficher les notifications dans le navigateur",
+      "permission_denied": "Les notifications sont bloquées. Activez-les dans les paramètres du navigateur.",
+      "permission_granted": "Notifications autorisées",
+      "permission_default": "Cliquez pour autoriser les notifications",
+      "request_permission": "Demander l'autorisation",
+      "test_notification": "Tester les notifications"
+    },
+    "sound": {
+      "title": "Son des notifications",
+      "description": "Jouer un son lors des notifications"
+    }
+  },
+  "shortcuts": {
+    "title": "Raccourcis clavier",
+    "enable": {
+      "title": "Activer les raccourcis clavier",
+      "description": "Utilisez des raccourcis clavier pour naviguer plus rapidement"
+    },
+    "categories": {
+      "global": "Globaux",
+      "dashboard": "Tableau de bord",
+      "games": "Jeux",
+      "members": "Membres",
+      "borrowings": "Emprunts"
+    },
+    "actions": {
+      "reset": "Réinitialiser les raccourcis",
+      "custom": "Raccourcis personnalisés",
+      "test": "Tester le raccourci",
+      "edit": "Modifier le raccourci",
+      "remove": "Supprimer le raccourci"
+    },
+    "help": {
+      "title": "Aide sur les raccourcis",
+      "description": "Appuyez sur '?' pour afficher l'aide des raccourcis",
+      "press_key": "Appuyez sur une touche ou combinaison de touches",
+      "conflict": "Ce raccourci est déjà utilisé",
+      "invalid": "Combinaison de touches invalide"
+    },
+    "default_shortcuts": {
+      "search": "Rechercher",
+      "preferences": "Préférences",
+      "help": "Aide",
+      "escape": "Échapper/Annuler",
+      "home": "Accueil",
+      "refresh": "Actualiser",
+      "export": "Exporter",
+      "add": "Ajouter nouveau",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "filter": "Filtrer",
+      "stats": "Statistiques",
+      "charts": "Graphiques",
+      "create": "Créer",
+      "return": "Retourner",
+      "history": "Historique"
+    }
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "widgets": {
+      "title": "Widgets",
+      "description": "Choisissez les widgets à afficher sur votre tableau de bord",
+      "stats": "Statistiques",
+      "recent": "Activité récente",
+      "popular": "Jeux populaires",
+      "charts": "Graphiques",
+      "activity": "Flux d'activité"
+    },
+    "layout": {
+      "title": "Disposition",
+      "description": "Organisez vos widgets par glisser-déposer",
+      "reset": "Réinitialiser la disposition"
+    }
+  },
+  "privacy": {
+    "title": "Confidentialité et données",
+    "data_export": {
+      "title": "Exporter mes données",
+      "description": "Téléchargez une copie de toutes vos données",
+      "button": "Exporter"
+    },
+    "clear_cache": {
+      "title": "Vider le cache",
+      "description": "Supprime les données mises en cache localement",
+      "button": "Vider"
+    },
+    "reset_all": {
+      "title": "Réinitialiser toutes les préférences",
+      "description": "Remet toutes les préférences aux valeurs par défaut",
+      "button": "Réinitialiser tout",
+      "confirm": "Cette action réinitialisera toutes vos préférences. Êtes-vous sûr ?"
+    }
+  },
+  "messages": {
+    "saved": "Préférences sauvegardées",
+    "reset": "Préférences réinitialisées",
+    "error": "Erreur lors de la sauvegarde",
+    "loading": "Chargement des préférences...",
+    "test_notification": "Ceci est une notification de test",
+    "cache_cleared": "Cache vidé avec succès",
+    "export_started": "Exportation démarrée...",
+    "unsaved_changes": "Vous avez des modifications non sauvegardées"
+  },
+  "keyboard_help": {
+    "title": "Raccourcis clavier",
+    "global_section": "Raccourcis globaux",
+    "page_section": "Raccourcis de la page",
+    "close": "Fermer l'aide",
+    "no_shortcuts": "Aucun raccourci disponible pour cette page"
+  }
+}

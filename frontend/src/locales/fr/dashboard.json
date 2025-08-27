@@ -1,0 +1,72 @@
+{
+  "title": "Tableau de bord",
+  "welcome": "Bienvenue dans le gestionnaire de club de jeux de société",
+  "overview": "Vue d'ensemble",
+  "stats": {
+    "title": "Statistiques",
+    "total_games": "Jeux total",
+    "available_games": "Jeux disponibles",
+    "total_members": "Membres total",
+    "active_borrowings": "Emprunts actifs",
+    "this_season": "Cette saison",
+    "all_time": "Depuis le début"
+  },
+  "recent_activity": {
+    "title": "Activité récente",
+    "no_activity": "Aucune activité récente",
+    "borrowed": "{member} a emprunté {game}",
+    "returned": "{member} a rendu {game}",
+    "joined": "{member} a rejoint le club",
+    "added_game": "Le jeu {game} a été ajouté",
+    "view_all": "Voir tout"
+  },
+  "popular_games": {
+    "title": "Jeux populaires",
+    "this_month": "Ce mois",
+    "this_season": "Cette saison",
+    "all_time": "Depuis le début",
+    "no_data": "Aucune donnée disponible",
+    "times_borrowed": "{count} emprunt(s)",
+    "view_game": "Voir le jeu"
+  },
+  "charts": {
+    "title": "Graphiques et tendances",
+    "borrowings_over_time": "Évolution des emprunts",
+    "member_activity": "Activité des membres",
+    "game_popularity": "Popularité des jeux",
+    "seasonal_trends": "Tendances saisonnières",
+    "monthly": "Mensuel",
+    "weekly": "Hebdomadaire",
+    "daily": "Quotidien"
+  },
+  "quick_actions": {
+    "title": "Actions rapides",
+    "add_game": "Ajouter un jeu",
+    "add_member": "Ajouter un membre",
+    "new_borrowing": "Nouvel emprunt",
+    "return_game": "Retourner un jeu",
+    "view_reports": "Voir les rapports"
+  },
+  "notifications": {
+    "title": "Notifications récentes",
+    "overdue": "{count} emprunt(s) en retard",
+    "new_members": "{count} nouveau(x) membre(s)",
+    "mark_read": "Marquer comme lu",
+    "view_all": "Voir toutes"
+  },
+  "seasonal_info": {
+    "current_season": "Saison actuelle",
+    "season_stats": "Statistiques de la saison",
+    "members_count": "{count} membre(s)",
+    "borrowings_count": "{count} emprunt(s)",
+    "games_borrowed": "{count} jeux empruntés"
+  },
+  "widgets": {
+    "customize": "Personnaliser",
+    "add_widget": "Ajouter un widget",
+    "remove_widget": "Supprimer le widget",
+    "move_up": "Déplacer vers le haut",
+    "move_down": "Déplacer vers le bas",
+    "reset_layout": "Réinitialiser la disposition"
+  }
+}

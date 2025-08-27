@@ -134,7 +134,7 @@ function QuickReturnModal({
 }: {
   game: Game;
   borrowing?: CurrentBorrowing;
-  onConfirm: (comment: string) => void;
+  onConfirm: (comment: string) => Promise<void>;
   onCancel: () => void;
 }) {
   const [comment, setComment] = useState<string>('');
@@ -355,10 +355,7 @@ export default function GamesList() {
     }
 
     try {
-      await BorrowingsService.returnBorrowing(borrowing.id, {
-        return_date: new Date().toISOString().split('T')[0] || '',
-        comment
-      });
+      await BorrowingsService.returnBorrowing(borrowing.id, comment);
       
       setShowQuickReturn(null);
       await loadGames(); // Recharger pour mettre à jour la disponibilité

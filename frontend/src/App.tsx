@@ -1,5 +1,36 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
+// Register Chart.js components
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { PreferencesProvider } from './context/PreferencesContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { LanguageProvider } from './context/LanguageContext';
+import { NotificationProvider } from './context/NotificationContext';
+import { useGlobalShortcuts } from './hooks/preferences/useKeyboardShortcuts';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import MainLayout from './components/layout/MainLayout';
 import LoginPage from './pages/auth/LoginPage';
@@ -18,6 +49,21 @@ import EditMemberPage from './pages/members/EditMemberPage';
 
 // Pages emprunts
 import BorrowingsPage from './pages/borrowings/BorrowingsPage';
+
+// Pages recherche
+import SearchPage from './pages/search/SearchPage';
+
+// Pages preferences
+import PreferencesPage from './pages/preferences/PreferencesPage';
+
+// Pages saisons
+import SeasonsPageComponent from './pages/seasons/SeasonsPage';
+import AddSeasonPage from './pages/seasons/AddSeasonPage';
+import EditSeasonPage from './pages/seasons/EditSeasonPage';
+import SeasonDetailPage from './pages/seasons/SeasonDetailPage';
+
+// Notification components
+import { ToastContainer } from './components/notifications';
 
 // Pages temporaires pour les autres modules
 function GamesPage() {
@@ -57,6 +103,9 @@ function SeasonsPage() {
 
 function AppRoutes() {
   const { isAuthenticated, isLoading } = useAuth();
+  
+  // Enable global keyboard shortcuts
+  useGlobalShortcuts();
 
   if (isLoading) {
     return (
@@ -107,6 +156,7 @@ function AppRoutes() {
         }
       >
         <Route index element={<Dashboard />} />
+        <Route path="search" element={<SearchPage />} />
         <Route path="games" element={<GamesPage />} />
         <Route path="games/new" element={<AddGamePage />} />
         <Route path="games/:id" element={<GameDetailPage />} />
@@ -116,7 +166,11 @@ function AppRoutes() {
         <Route path="members/:id" element={<MemberDetailPage />} />
         <Route path="members/:id/edit" element={<EditMemberPage />} />
         <Route path="borrowings" element={<BorrowingsPage />} />
-        <Route path="seasons" element={<SeasonsPage />} />
+        <Route path="seasons" element={<SeasonsPageComponent />} />
+        <Route path="seasons/new" element={<AddSeasonPage />} />
+        <Route path="seasons/:id" element={<SeasonDetailPage />} />
+        <Route path="seasons/:id/edit" element={<EditSeasonPage />} />
+        <Route path="preferences" element={<PreferencesPage />} />
       </Route>
 
       {/* Route par défaut */}
@@ -129,14 +183,31 @@ export default function App() {
   return (
     <Router>
       <AuthProvider>
-        {/* Skip link pour l'accessibilité */}
-        <a 
-          href="#main-content" 
-          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-blue-600 text-white px-4 py-2 rounded-lg z-50 transition-all"
-        >
-          Aller au contenu principal
-        </a>
-        <AppRoutes />
+        <PreferencesProvider>
+          <ThemeProvider>
+            <LanguageProvider>
+              <NotificationProvider>
+                {/* Skip link pour l'accessibilité */}
+                <a 
+                  href="#main-content" 
+                  className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-blue-600 text-white px-4 py-2 rounded-lg z-50 transition-all"
+                >
+                  Aller au contenu principal
+                </a>
+                {/* ARIA live region for screen reader announcements */}
+                <div 
+                  id="aria-live-region" 
+                  aria-live="polite" 
+                  aria-atomic="true" 
+                  className="sr-only"
+                />
+                <AppRoutes />
+                {/* Toast notifications container */}
+                <ToastContainer position="top-right" />
+              </NotificationProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </PreferencesProvider>
       </AuthProvider>
     </Router>
   );

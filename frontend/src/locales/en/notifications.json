@@ -1,0 +1,164 @@
+{
+  "title": "Notifications",
+  "unread": "unread",
+  "unreadCount": {
+    "zero": "No notifications",
+    "one": "1 unread notification",
+    "other": "{count} unread notifications"
+  },
+  "types": {
+    "borrowing": "Borrowing",
+    "return": "Return",
+    "overdue": "Overdue",
+    "reminder": "Reminder",
+    "system": "System",
+    "success": "Success",
+    "warning": "Warning",
+    "error": "Error"
+  },
+  "priorities": {
+    "low": "Low",
+    "normal": "Normal",
+    "high": "High",
+    "urgent": "Urgent"
+  },
+  "actions": {
+    "markAsRead": "Mark as read",
+    "markAllAsRead": "Mark all as read",
+    "delete": "Delete",
+    "deleteAll": "Delete all",
+    "refresh": "Refresh",
+    "filter": "Filter",
+    "view": "View",
+    "close": "Close",
+    "dismiss": "Dismiss"
+  },
+  "filters": {
+    "title": "Filters",
+    "type": "Type",
+    "status": "Status",
+    "priority": "Priority",
+    "allTypes": "All types",
+    "allStatuses": "All",
+    "allPriorities": "All priorities",
+    "unreadOnly": "Unread",
+    "readOnly": "Read",
+    "apply": "Apply",
+    "reset": "Reset"
+  },
+  "messages": {
+    "noNotifications": "No notifications",
+    "noNotificationsDescription": "You don't have any notifications at the moment.",
+    "allNotificationsRead": "All notifications have been marked as read",
+    "allNotificationsDeleted": "All notifications have been deleted",
+    "notificationDeleted": "Notification deleted",
+    "notificationMarkedAsRead": "Notification marked as read",
+    "errorLoading": "Error loading notifications",
+    "errorMarkingAsRead": "Error marking as read",
+    "errorDeleting": "Error deleting",
+    "confirmDeleteAll": "Are you sure you want to delete all notifications?",
+    "loadMore": "Load more",
+    "endOfList": "All notifications have been loaded",
+    "loading": "Loading..."
+  },
+  "timeago": {
+    "now": "Just now",
+    "minutesAgo": {
+      "one": "1 minute ago",
+      "other": "{count} minutes ago"
+    },
+    "hoursAgo": {
+      "one": "1 hour ago",
+      "other": "{count} hours ago"
+    },
+    "daysAgo": {
+      "one": "1 day ago",
+      "other": "{count} days ago"
+    },
+    "weeksAgo": {
+      "one": "1 week ago",
+      "other": "{count} weeks ago"
+    }
+  },
+  "dateGroups": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "thisWeek": "This week",
+    "lastWeek": "Last week",
+    "thisMonth": "This month",
+    "lastMonth": "Last month"
+  },
+  "toasts": {
+    "newNotification": "New notification",
+    "notificationCreated": "Notification created successfully",
+    "systemNotificationCreated": "System notification created",
+    "overdueCheckCompleted": "Overdue check completed",
+    "dueSoonCheckCompleted": "Due soon check completed",
+    "expiredNotificationsCleared": "Expired notifications cleared"
+  },
+  "borrowings": {
+    "newBorrowing": {
+      "title": "New borrowing",
+      "message": "{memberName} borrowed the game \"{gameName}\""
+    },
+    "return": {
+      "title": "Game returned",
+      "message": "{memberName} returned the game \"{gameName}\""
+    },
+    "overdue": {
+      "title": "Overdue borrowing",
+      "message": "The borrowing of \"{gameName}\" by {memberName} is overdue"
+    },
+    "dueSoon": {
+      "title": "Due tomorrow",
+      "message": "Don't forget to return \"{gameName}\" tomorrow"
+    },
+    "reminder": {
+      "title": "Borrowing reminder",
+      "message": "Remember to return \"{gameName}\" soon"
+    }
+  },
+  "system": {
+    "seasonChange": {
+      "title": "New season",
+      "message": "Season {seasonName} is now active"
+    },
+    "maintenance": {
+      "title": "Scheduled maintenance",
+      "message": "System maintenance scheduled for {date}"
+    },
+    "featureUpdate": {
+      "title": "New feature",
+      "message": "New features are now available"
+    },
+    "dataExport": {
+      "title": "Export completed",
+      "message": "Export completed - {recordCount} records"
+    },
+    "newMember": {
+      "title": "New member",
+      "message": "New member registered: {memberName}"
+    },
+    "gameAdded": {
+      "title": "New game",
+      "message": "New game added: {gameName}"
+    },
+    "systemAlert": {
+      "title": "System alert",
+      "message": "Warning: {alertMessage}"
+    }
+  },
+  "aria": {
+    "notificationButton": "Notifications, {count} unread",
+    "notificationItem": "Notification: {title}. {message}. {timeago}",
+    "markAsReadButton": "Mark notification as read",
+    "deleteButton": "Delete notification",
+    "viewButton": "View notification details",
+    "closeButton": "Close notifications",
+    "filterButton": "Filter notifications",
+    "refreshButton": "Refresh notifications",
+    "menuButton": "Actions menu",
+    "toast": "Toast notification: {title}",
+    "toastDismiss": "Dismiss toast notification"
+  }
+}

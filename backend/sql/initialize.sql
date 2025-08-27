@@ -54,7 +54,35 @@ CREATE TABLE `games` (
 
 CREATE TABLE `seasons` (
   `id` int(11) NOT NULL,
-  `year` varchar(10) NOT NULL
+  `name` varchar(100) NOT NULL,
+  `description` text COLLATE utf8_bin DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `is_current` tinyint(1) NOT NULL DEFAULT 0,
+  `is_archived` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `user_preferences`
+--
+
+CREATE TABLE `user_preferences` (
+  `user_id` int(11) NOT NULL,
+  `theme` ENUM('light', 'dark', 'auto') NOT NULL DEFAULT 'auto',
+  `language` ENUM('fr', 'en') NOT NULL DEFAULT 'fr',
+  `notifications_enabled` tinyint(1) NOT NULL DEFAULT 1,
+  `notification_types` JSON DEFAULT '["borrowing", "return", "overdue"]',
+  `keyboard_shortcuts_enabled` tinyint(1) NOT NULL DEFAULT 1,
+  `custom_shortcuts` JSON DEFAULT '{}',
+  `dashboard_widgets` JSON DEFAULT '["stats", "recent", "popular", "charts"]',
+  `items_per_page` int(11) NOT NULL DEFAULT 10,
+  `date_format` ENUM('dd/mm/yyyy', 'mm/dd/yyyy', 'yyyy-mm-dd') NOT NULL DEFAULT 'dd/mm/yyyy',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -113,6 +141,12 @@ ALTER TABLE `seasons`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `user_preferences`
+--
+ALTER TABLE `user_preferences`
+  ADD PRIMARY KEY (`user_id`);
+
+--
 -- Index pour la table `members`
 --
 ALTER TABLE `members`
@@ -164,6 +198,53 @@ ALTER TABLE `borrowings` ADD CONSTRAINT `game_key` FOREIGN KEY (`id_game`) REFER
 ALTER TABLE `borrowings` ADD CONSTRAINT `member2_key` FOREIGN KEY (`id_member`) REFERENCES `members` (`id`) ON DELETE CASCADE;
 
 --
+-- Contraintes pour la table `user_preferences`
+--
+ALTER TABLE `user_preferences` ADD CONSTRAINT `user_preferences_user_id` FOREIGN KEY (`user_id`) REFERENCES `members` (`id`) ON DELETE CASCADE;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `type` ENUM('borrowing', 'return', 'overdue', 'reminder', 'system', 'success', 'warning', 'error') NOT NULL,
+  `title` varchar(255) COLLATE utf8_bin NOT NULL,
+  `message` text COLLATE utf8_bin NOT NULL,
+  `related_entity_type` ENUM('game', 'member', 'borrowing', 'season') DEFAULT NULL,
+  `related_entity_id` int(11) DEFAULT NULL,
+  `action_url` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `priority` ENUM('low', 'normal', 'high', 'urgent') NOT NULL DEFAULT 'normal',
+  `expires_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Index pour la table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_user_unread` (`user_id`, `is_read`),
+  ADD KEY `idx_created_at` (`created_at`),
+  ADD KEY `idx_expires_at` (`expires_at`);
+
+--
+-- AUTO_INCREMENT pour la table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Contraintes pour la table `notifications`
+--
+ALTER TABLE `notifications` ADD CONSTRAINT `notifications_user_id` FOREIGN KEY (`user_id`) REFERENCES `members` (`id`) ON DELETE CASCADE;
+
+--
 -- Vues
 --
 CREATE VIEW `current_borrowings` AS SELECT  b.id, b.id_season, b.borrow_date, m.name, m.firstname, m.picture, g.name AS game_name, g.picture AS game_picture FROM borrowings b, games g, members m WHERE b.id_game=g.id and b.id_member=m.id and b.return_date IS NULL ORDER BY b.borrow_date;
@@ -205,5 +286,5 @@ INSERT INTO `games` (name, picture, available) VALUES
 --
 -- Insertion d'une saison de test
 --
-INSERT INTO `seasons` (id, name, start_date, end_date, description) VALUES
-(1, "2024-2025", "2024-09-01", "2025-06-30", "Saison de test 2024-2025");
+INSERT INTO `seasons` (id, name, start_date, end_date, description, is_current) VALUES
+(1, "2024-2025", "2024-09-01", "2025-06-30", "Saison de test 2024-2025", 1);

@@ -52,6 +52,22 @@ app.use('/api/borrowings', borrowingsRoutes);
 const userRoutes = require('./routes/user');
 app.use('/api/user', userRoutes);
 
+//Routes pour la recherche
+const searchRoutes = require('./routes/search');
+app.use('/api/search', searchRoutes);
+
+//Routes pour les preferences
+const preferencesRoutes = require('./routes/preferences');
+app.use('/api/preferences', preferencesRoutes);
+
+//Routes pour les notifications
+const notificationsRoutes = require('./routes/notifications');
+app.use('/api/notifications', notificationsRoutes);
+
+//Routes pour la maintenance
+const maintenanceRoutes = require('./routes/maintenance');
+app.use('/api/maintenance', maintenanceRoutes);
+
 //Route pour le dossier images
 const path = require('path');
 app.use('/images', express.static('/app/images'));

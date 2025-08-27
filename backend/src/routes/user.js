@@ -24,7 +24,7 @@ router.post('/login/', authenticateApiKey, async (req, res) => {
                    res.status(200).json({
                        userId: result[0].id,
                        token: jwt.sign(
-                        { userId: result[0].id },
+                        { userId: result[0].id, isAdmin: result[0].admin === 1 },
                         process.env.RANDOM_TOKEN_SECRET,
                         { expiresIn: '24h' }
                     )

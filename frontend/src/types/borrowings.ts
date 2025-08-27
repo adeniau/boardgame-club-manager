@@ -65,3 +65,49 @@ export interface BorrowingFormData {
 export interface ReturnBorrowingFormData {
   comment: string;
 }
+
+// Type pour l'historique complet avec details inclus (pour la route /api/borrowings/History)
+export interface BorrowingHistoryItem {
+  id: number;
+  id_season: number;
+  id_member: number;
+  id_game: number;
+  borrow_date: string;
+  return_date: string | null;
+  comment: string | null;
+  
+  // Details du membre
+  member_firstname: string;
+  member_lastname: string;
+  member_email: string;
+  member_phone?: string;
+  member_picture?: string;
+  
+  // Details du jeu  
+  game_name: string;
+  game_picture?: string;
+  game_available: number;
+  
+  // Details de la saison
+  season_name?: string;
+}
+
+// Type pour les filtres de l'historique
+export interface BorrowingHistoryFilters {
+  memberId?: number;
+  gameId?: number;
+  seasonId?: number;
+  status?: 'current' | 'returned';
+  dateFrom?: string;
+  dateTo?: string;
+  search?: string;
+  limit?: number;
+  offset?: number;
+}
+
+// Type pour la reponse API standardisee
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useBorrowingForm } from '../../hooks/useBorrowingForm';
 import { BorrowingsService } from '../../services/borrowingsService';
 import { MembersService } from '../../services/membersService';
@@ -7,6 +7,7 @@ import { Member } from '../../types/members';
 import { Game } from '../../types/games';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import ErrorAlert from '../ui/ErrorAlert';
+import { useDebounce } from '../../utils/debounce';
 
 interface CreateBorrowingFormProps {
   onSuccess?: () => void;
@@ -40,6 +41,12 @@ const CreateBorrowingForm: React.FC<CreateBorrowingFormProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [showMemberDropdown, setShowMemberDropdown] = useState(false);
   const [showGameDropdown, setShowGameDropdown] = useState(false);
+  const [, setIsSearchingMembers] = useState(false);
+  const [, setIsSearchingGames] = useState(false);
+  
+  // Debouncer les termes de recherche pour ameliorer les performances
+  const debouncedMemberSearch = useDebounce(memberSearchTerm, 300);
+  const debouncedGameSearch = useDebounce(gameSearchTerm, 300);
 
   // Charger les membres et jeux
   useEffect(() => {
@@ -63,17 +70,45 @@ const CreateBorrowingForm: React.FC<CreateBorrowingFormProps> = ({
     loadData();
   }, []);
 
-  // Filtrer les membres selon le terme de recherche
-  const filteredMembers = members.filter(member => 
-    `${member.firstname || ''} ${member.name || ''}`.toLowerCase().includes(memberSearchTerm.toLowerCase()) ||
-    (member.email || '').toLowerCase().includes(memberSearchTerm.toLowerCase())
-  );
+  // Filtrer les membres avec memoization et debouncing
+  const filteredMembers = useMemo(() => {
+    if (!debouncedMemberSearch.trim()) {
+      return members.slice(0, 10); // Limiter les resultats initiaux
+    }
+    
+    const searchTerm = debouncedMemberSearch.toLowerCase();
+    return members.filter(member => 
+      `${member.firstname || ''} ${member.name || ''}`.toLowerCase().includes(searchTerm) ||
+      (member.email || '').toLowerCase().includes(searchTerm)
+    ).slice(0, 20); // Limiter les resultats
+  }, [members, debouncedMemberSearch]);
 
-  // Filtrer les jeux disponibles selon le terme de recherche
-  const filteredGames = games.filter(game => 
-    (game.name || '').toLowerCase().includes(gameSearchTerm.toLowerCase()) && 
-    Number(game.available) > 0
-  );
+  // Filtrer les jeux avec memoization et debouncing
+  const filteredGames = useMemo(() => {
+    if (!debouncedGameSearch.trim()) {
+      return games.filter(game => Number(game.available) > 0).slice(0, 10);
+    }
+    
+    const searchTerm = debouncedGameSearch.toLowerCase();
+    return games.filter(game => 
+      (game.name || '').toLowerCase().includes(searchTerm) && 
+      Number(game.available) > 0
+    ).slice(0, 20);
+  }, [games, debouncedGameSearch]);
+
+  // Effect pour gerer l'etat de recherche des membres
+  useEffect(() => {
+    if (debouncedMemberSearch === memberSearchTerm) {
+      setIsSearchingMembers(false);
+    }
+  }, [debouncedMemberSearch, memberSearchTerm]);
+
+  // Effect pour gerer l'etat de recherche des jeux
+  useEffect(() => {
+    if (debouncedGameSearch === gameSearchTerm) {
+      setIsSearchingGames(false);
+    }
+  }, [debouncedGameSearch, gameSearchTerm]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,7 +197,7 @@ const CreateBorrowingForm: React.FC<CreateBorrowingFormProps> = ({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span className="text-sm font-medium text-blue-900">
-                  Saison courante : {currentSeason.year}
+                  Saison courante : {currentSeason.name}
                 </span>
               </div>
             </div>

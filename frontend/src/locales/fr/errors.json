@@ -1,0 +1,80 @@
+{
+  "general": {
+    "unexpected": "Une erreur inattendue s'est produite",
+    "network": "Erreur de connexion réseau",
+    "timeout": "Délai d'attente dépassé",
+    "server_error": "Erreur serveur",
+    "not_found": "Ressource non trouvée",
+    "unauthorized": "Non autorisé",
+    "forbidden": "Accès interdit",
+    "validation": "Erreur de validation",
+    "try_again": "Veuillez réessayer",
+    "contact_admin": "Contactez l'administrateur si le problème persiste"
+  },
+  "auth": {
+    "login_failed": "Échec de la connexion",
+    "invalid_credentials": "Identifiants invalides",
+    "session_expired": "Session expirée, veuillez vous reconnecter",
+    "access_denied": "Accès refusé",
+    "password_required": "Mot de passe requis",
+    "email_required": "Adresse e-mail requise"
+  },
+  "api": {
+    "connection_failed": "Impossible de se connecter au serveur",
+    "invalid_response": "Réponse du serveur invalide",
+    "rate_limit": "Trop de requêtes, veuillez patienter",
+    "maintenance": "Service en maintenance"
+  },
+  "forms": {
+    "required_field": "Ce champ est obligatoire",
+    "invalid_email": "Adresse e-mail invalide",
+    "invalid_phone": "Numéro de téléphone invalide",
+    "invalid_date": "Date invalide",
+    "file_too_large": "Fichier trop volumineux",
+    "invalid_file_type": "Type de fichier non supporté",
+    "upload_failed": "Échec du téléchargement"
+  },
+  "games": {
+    "not_found": "Jeu introuvable",
+    "already_exists": "Un jeu avec ce nom existe déjà",
+    "not_available": "Jeu non disponible",
+    "delete_failed": "Impossible de supprimer le jeu",
+    "update_failed": "Impossible de modifier le jeu",
+    "has_active_borrowings": "Ce jeu a des emprunts en cours"
+  },
+  "members": {
+    "not_found": "Membre introuvable",
+    "email_exists": "Cette adresse e-mail est déjà utilisée",
+    "delete_failed": "Impossible de supprimer le membre",
+    "update_failed": "Impossible de modifier le membre",
+    "has_active_borrowings": "Ce membre a des emprunts en cours",
+    "not_active": "Membre non actif"
+  },
+  "borrowings": {
+    "not_found": "Emprunt introuvable",
+    "already_returned": "Ce jeu a déjà été retourné",
+    "game_not_available": "Ce jeu n'est pas disponible",
+    "member_not_active": "Ce membre n'est pas actif",
+    "return_failed": "Impossible de retourner le jeu",
+    "borrow_failed": "Impossible d'emprunter le jeu",
+    "already_borrowed": "Ce membre a déjà emprunté ce jeu"
+  },
+  "preferences": {
+    "load_failed": "Impossible de charger les préférences",
+    "save_failed": "Impossible de sauvegarder les préférences",
+    "reset_failed": "Impossible de réinitialiser les préférences",
+    "invalid_theme": "Thème invalide",
+    "invalid_language": "Langue invalide"
+  },
+  "notifications": {
+    "permission_denied": "Permission refusée pour les notifications",
+    "not_supported": "Notifications non supportées par ce navigateur",
+    "send_failed": "Échec de l'envoi de la notification"
+  },
+  "offline": {
+    "title": "Hors ligne",
+    "message": "Vous êtes actuellement hors ligne",
+    "retry": "Réessayer",
+    "cached_data": "Affichage des données mises en cache"
+  }
+}

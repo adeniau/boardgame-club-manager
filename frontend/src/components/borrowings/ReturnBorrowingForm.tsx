@@ -5,6 +5,7 @@ import { GamesService } from '../../services/gamesService';
 import { MembersService } from '../../services/membersService';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import ErrorAlert from '../ui/ErrorAlert';
+import ConfirmationModal from '../ui/ConfirmationModal';
 
 interface ReturnBorrowingFormProps {
   borrowing: CurrentBorrowing;
@@ -23,6 +24,7 @@ const ReturnBorrowingForm: React.FC<ReturnBorrowingFormProps> = ({
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const calculateBorrowDuration = (): number => {
     const borrow = new Date(borrowing.borrow_date);
@@ -31,9 +33,12 @@ const ReturnBorrowingForm: React.FC<ReturnBorrowingFormProps> = ({
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmReturn = async () => {
     try {
       setIsSubmitting(true);
       setError(null);
@@ -46,9 +51,14 @@ const ReturnBorrowingForm: React.FC<ReturnBorrowingFormProps> = ({
       onSuccess();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+      setShowConfirmation(false);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleCancelConfirmation = () => {
+    setShowConfirmation(false);
   };
 
   const duration = calculateBorrowDuration();
@@ -212,6 +222,19 @@ const ReturnBorrowingForm: React.FC<ReturnBorrowingFormProps> = ({
           </form>
         </div>
       </div>
+
+      {/* Modal de confirmation */}
+      <ConfirmationModal
+        isOpen={showConfirmation}
+        title="Confirmer le retour"
+        message={`Êtes-vous sûr de vouloir marquer l'emprunt du jeu "${borrowing.game_name}" comme retourné ? Cette action ne peut pas être annulée.`}
+        confirmText="Confirmer le retour"
+        cancelText="Annuler"
+        confirmVariant="success"
+        isLoading={isSubmitting}
+        onConfirm={handleConfirmReturn}
+        onCancel={handleCancelConfirmation}
+      />
     </div>
   );
 };

@@ -1,0 +1,91 @@
+{
+  "title": "Gestion des jeux",
+  "subtitle": "Gérez votre collection de jeux de société",
+  "add_game": "Ajouter un jeu",
+  "edit_game": "Modifier le jeu",
+  "game_details": "Détails du jeu",
+  "no_games": "Aucun jeu dans la collection",
+  "search_games": "Rechercher des jeux...",
+  "fields": {
+    "name": "Nom du jeu",
+    "picture": "Image",
+    "available": "Disponible",
+    "status": "Statut",
+    "description": "Description",
+    "category": "Catégorie",
+    "min_players": "Joueurs min",
+    "max_players": "Joueurs max",
+    "duration": "Durée (min)",
+    "age": "Âge minimum",
+    "difficulty": "Difficulté"
+  },
+  "status": {
+    "available": "Disponible",
+    "borrowed": "Emprunté",
+    "maintenance": "En maintenance",
+    "lost": "Perdu"
+  },
+  "actions": {
+    "view": "Voir",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "borrow": "Emprunter",
+    "return": "Retourner",
+    "mark_available": "Marquer disponible",
+    "mark_unavailable": "Marquer indisponible"
+  },
+  "filters": {
+    "all": "Tous",
+    "available": "Disponibles",
+    "borrowed": "Empruntés",
+    "category": "Catégorie",
+    "players": "Nombre de joueurs",
+    "duration": "Durée",
+    "age": "Âge"
+  },
+  "sort": {
+    "name": "Nom",
+    "popularity": "Popularité",
+    "newest": "Plus récents",
+    "availability": "Disponibilité"
+  },
+  "stats": {
+    "total": "Total",
+    "available": "Disponibles",
+    "borrowed": "Empruntés",
+    "popularity": "Popularité"
+  },
+  "borrowing": {
+    "current_borrower": "Emprunté par",
+    "borrowed_date": "Date d'emprunt",
+    "expected_return": "Retour prévu",
+    "overdue": "En retard",
+    "history": "Historique des emprunts"
+  },
+  "messages": {
+    "added": "Jeu ajouté avec succès",
+    "updated": "Jeu mis à jour avec succès",
+    "deleted": "Jeu supprimé avec succès",
+    "error_add": "Erreur lors de l'ajout du jeu",
+    "error_update": "Erreur lors de la mise à jour du jeu",
+    "error_delete": "Erreur lors de la suppression du jeu",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer ce jeu ?",
+    "game_borrowed": "Ce jeu est actuellement emprunté",
+    "game_available": "Ce jeu est disponible"
+  },
+  "validation": {
+    "name_required": "Le nom du jeu est obligatoire",
+    "name_too_long": "Le nom ne peut pas dépasser 100 caractères",
+    "invalid_players": "Nombre de joueurs invalide",
+    "invalid_duration": "Durée invalide",
+    "invalid_age": "Âge invalide"
+  },
+  "image": {
+    "upload": "Télécharger une image",
+    "change": "Changer l'image",
+    "remove": "Supprimer l'image",
+    "preview": "Aperçu",
+    "formats": "Formats acceptés: JPG, PNG, GIF",
+    "max_size": "Taille max: 5MB"
+  }
+}

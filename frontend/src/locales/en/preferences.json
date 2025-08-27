@@ -1,0 +1,171 @@
+{
+  "title": "Preferences",
+  "subtitle": "Customize your experience",
+  "tabs": {
+    "general": "General",
+    "appearance": "Appearance",
+    "notifications": "Notifications",
+    "shortcuts": "Shortcuts",
+    "dashboard": "Dashboard",
+    "privacy": "Privacy"
+  },
+  "general": {
+    "title": "General preferences",
+    "language": {
+      "title": "Language",
+      "description": "Choose your preferred language"
+    },
+    "date_format": {
+      "title": "Date format",
+      "description": "Date display format"
+    },
+    "items_per_page": {
+      "title": "Items per page",
+      "description": "Number of items displayed per page in lists"
+    }
+  },
+  "appearance": {
+    "title": "Appearance",
+    "theme": {
+      "title": "Theme",
+      "description": "Choose the application appearance",
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto"
+    },
+    "theme_description": {
+      "light": "Uses a light theme",
+      "dark": "Uses a dark theme",
+      "auto": "Adapts to system preferences"
+    },
+    "preview": "Preview",
+    "current_theme": "Current theme: {theme}"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "enable": {
+      "title": "Enable notifications",
+      "description": "Receive notifications for important events"
+    },
+    "types": {
+      "title": "Notification types",
+      "description": "Choose which types of notifications you want to receive",
+      "borrowing": "New borrowings",
+      "return": "Game returns",
+      "overdue": "Overdue borrowings",
+      "reminders": "Reminders"
+    },
+    "browser": {
+      "title": "Browser notifications",
+      "description": "Show notifications in the browser",
+      "permission_denied": "Notifications are blocked. Enable them in browser settings.",
+      "permission_granted": "Notifications allowed",
+      "permission_default": "Click to allow notifications",
+      "request_permission": "Request permission",
+      "test_notification": "Test notifications"
+    },
+    "sound": {
+      "title": "Notification sound",
+      "description": "Play a sound when notifications appear"
+    }
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "enable": {
+      "title": "Enable keyboard shortcuts",
+      "description": "Use keyboard shortcuts to navigate faster"
+    },
+    "categories": {
+      "global": "Global",
+      "dashboard": "Dashboard",
+      "games": "Games",
+      "members": "Members",
+      "borrowings": "Borrowings"
+    },
+    "actions": {
+      "reset": "Reset shortcuts",
+      "custom": "Custom shortcuts",
+      "test": "Test shortcut",
+      "edit": "Edit shortcut",
+      "remove": "Remove shortcut"
+    },
+    "help": {
+      "title": "Shortcuts help",
+      "description": "Press '?' to show shortcuts help",
+      "press_key": "Press a key or key combination",
+      "conflict": "This shortcut is already in use",
+      "invalid": "Invalid key combination"
+    },
+    "default_shortcuts": {
+      "search": "Search",
+      "preferences": "Preferences",
+      "help": "Help",
+      "escape": "Escape/Cancel",
+      "home": "Home",
+      "refresh": "Refresh",
+      "export": "Export",
+      "add": "Add new",
+      "edit": "Edit",
+      "delete": "Delete",
+      "filter": "Filter",
+      "stats": "Statistics",
+      "charts": "Charts",
+      "create": "Create",
+      "return": "Return",
+      "history": "History"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "widgets": {
+      "title": "Widgets",
+      "description": "Choose which widgets to display on your dashboard",
+      "stats": "Statistics",
+      "recent": "Recent activity",
+      "popular": "Popular games",
+      "charts": "Charts",
+      "activity": "Activity feed"
+    },
+    "layout": {
+      "title": "Layout",
+      "description": "Organize your widgets by drag and drop",
+      "reset": "Reset layout"
+    }
+  },
+  "privacy": {
+    "title": "Privacy and data",
+    "data_export": {
+      "title": "Export my data",
+      "description": "Download a copy of all your data",
+      "button": "Export"
+    },
+    "clear_cache": {
+      "title": "Clear cache",
+      "description": "Removes locally cached data",
+      "button": "Clear"
+    },
+    "reset_all": {
+      "title": "Reset all preferences",
+      "description": "Reset all preferences to default values",
+      "button": "Reset all",
+      "confirm": "This action will reset all your preferences. Are you sure?"
+    }
+  },
+  "messages": {
+    "saved": "Preferences saved",
+    "reset": "Preferences reset",
+    "error": "Error saving preferences",
+    "loading": "Loading preferences...",
+    "test_notification": "This is a test notification",
+    "cache_cleared": "Cache cleared successfully",
+    "export_started": "Export started...",
+    "unsaved_changes": "You have unsaved changes"
+  },
+  "keyboard_help": {
+    "title": "Keyboard shortcuts",
+    "global_section": "Global shortcuts",
+    "page_section": "Page shortcuts",
+    "close": "Close help",
+    "no_shortcuts": "No shortcuts available for this page"
+  }
+}

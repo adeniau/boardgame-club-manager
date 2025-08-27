@@ -1,4 +1,5 @@
 const db = require('../middleware/db');
+const notificationService = require('./notificationService');
 
 class BorrowingsService {
     
@@ -87,7 +88,7 @@ class BorrowingsService {
                 m.picture as member_picture,
                 g.name as game_name,
                 g.picture as game_picture,
-                s.name as season_name
+                s.year as season_name
             FROM borrowings b
             JOIN members m ON b.id_member = m.id
             JOIN games g ON b.id_game = g.id
@@ -147,14 +148,17 @@ class BorrowingsService {
     static async createBorrowing(borrowingData) {
         const { id_season, id_member, id_game, borrow_date } = borrowingData;
         
-        // Commencer une transaction pour assurer la coherence
-        await db.pool.query("START TRANSACTION");
+        // Obtenir une connexion unique du pool pour la transaction
+        const conn = await db.pool.getConnection();
         
         try {
             console.log(`[DEBUG] Creating borrowing for game ${id_game}...`);
             
+            // Commencer une transaction
+            await conn.beginTransaction();
+            
             // Verifier que le jeu est disponible
-            const gameCheck = await db.pool.query(
+            const gameCheck = await conn.query(
                 "SELECT available FROM games WHERE id = ?", 
                 [id_game]
             );
@@ -163,12 +167,12 @@ class BorrowingsService {
                 throw new Error('Jeu non trouve');
             }
             
-            if (gameCheck[0].available === 0) {
+            if (gameCheck[0].available === '0') {
                 throw new Error('Jeu non disponible');
             }
             
             // Verifier que le membre existe
-            const memberCheck = await db.pool.query(
+            const memberCheck = await conn.query(
                 "SELECT id FROM members WHERE id = ?", 
                 [id_member]
             );
@@ -178,7 +182,7 @@ class BorrowingsService {
             }
             
             // Verifier que la saison existe
-            const seasonCheck = await db.pool.query(
+            const seasonCheck = await conn.query(
                 "SELECT id FROM seasons WHERE id = ?", 
                 [id_season]
             );
@@ -188,7 +192,7 @@ class BorrowingsService {
             }
             
             // Inserer l'emprunt
-            const result = await db.pool.query(
+            const result = await conn.query(
                 "INSERT INTO borrowings (id_season, id_member, id_game, borrow_date) VALUES (?, ?, ?, ?)",
                 [id_season, id_member, id_game, borrow_date]
             );
@@ -196,23 +200,58 @@ class BorrowingsService {
             console.log(`[DEBUG] Borrowing created with ID: ${result.insertId}`);
             
             // Mettre à jour la disponibilite du jeu
-            const gameResult = await db.pool.query(
-                "UPDATE games SET available = 0 WHERE id = ?", 
+            const gameResult = await conn.query(
+                "UPDATE games SET available = '0' WHERE id = ?", 
                 [id_game]
             );
             
             console.log(`[DEBUG] Game ${id_game} marked unavailable, affected rows: ${gameResult.affectedRows}`);
             
             // Valider la transaction
-            await db.pool.query("COMMIT");
+            await conn.commit();
             console.log(`[DEBUG] Transaction committed for new borrowing`);
+            
+            // Creer des notifications pour le nouvel emprunt
+            try {
+                // Recuperer les details pour les notifications
+                const memberDetails = await conn.query(
+                    "SELECT firstname, name FROM members WHERE id = ?", 
+                    [id_member]
+                );
+                const gameDetails = await conn.query(
+                    "SELECT name FROM games WHERE id = ?", 
+                    [id_game]
+                );
+                
+                if (memberDetails.length > 0 && gameDetails.length > 0) {
+                    const memberName = `${memberDetails[0].firstname} ${memberDetails[0].name}`;
+                    const gameName = gameDetails[0].name;
+                    
+                    await notificationService.createBorrowingNotifications({
+                        borrowingId: result.insertId,
+                        memberId: id_member,
+                        gameId: id_game,
+                        gameName: gameName,
+                        memberName: memberName,
+                        type: 'new_borrowing'
+                    });
+                    
+                    console.log(`[DEBUG] Notifications created for new borrowing`);
+                }
+            } catch (error) {
+                console.error('[ERROR] Failed to create borrowing notifications:', error);
+                // Ne pas faire échouer l'emprunt si les notifications échouent
+            }
             
             return result;
         } catch (error) {
             // Annuler la transaction en cas d'erreur
-            await db.pool.query("ROLLBACK");
+            await conn.rollback();
             console.error('[ERROR] Failed to create borrowing:', error);
             throw error;
+        } finally {
+            // Liberer la connexion
+            if (conn) conn.release();
         }
     }
 
@@ -222,14 +261,17 @@ class BorrowingsService {
     static async updateBorrowing(id, borrowingData) {
         const { return_date, comment } = borrowingData;
         
-        // Commencer une transaction pour assurer la coherence
-        await db.pool.query("START TRANSACTION");
+        // Obtenir une connexion unique du pool pour la transaction
+        const conn = await db.pool.getConnection();
         
         try {
             console.log(`[DEBUG] Returning borrowing ${id}...`);
             
+            // Commencer une transaction
+            await conn.beginTransaction();
+            
             // Recuperer l'ID du jeu depuis l'emprunt
-            const borrowingResult = await db.pool.query(
+            const borrowingResult = await conn.query(
                 "SELECT id_game, return_date FROM borrowings WHERE id = ?", 
                 [id]
             );
@@ -244,7 +286,7 @@ class BorrowingsService {
             console.log(`[DEBUG] Returning game ${gameId} for borrowing ${id}`);
             
             // Mettre à jour l'emprunt avec la date de retour
-            const result = await db.pool.query(
+            const result = await conn.query(
                 "UPDATE borrowings SET return_date = ?, comment = ? WHERE id = ?",
                 [return_date, comment, id]
             );
@@ -254,8 +296,8 @@ class BorrowingsService {
             // Si on est en train de retourner un jeu (pas encore retourne)
             if (!currentReturnDate && return_date) {
                 // Mettre à jour la disponibilite du jeu (le marquer comme disponible)
-                const gameResult = await db.pool.query(
-                    "UPDATE games SET available = 1 WHERE id = ?", 
+                const gameResult = await conn.query(
+                    "UPDATE games SET available = '1' WHERE id = ?", 
                     [gameId]
                 );
                 
@@ -263,15 +305,54 @@ class BorrowingsService {
             }
             
             // Valider la transaction
-            await db.pool.query("COMMIT");
+            await conn.commit();
             console.log(`[DEBUG] Transaction committed for borrowing ${id}`);
+            
+            // Creer des notifications pour le retour si c'est un retour
+            if (!currentReturnDate && return_date) {
+                try {
+                    // Recuperer les details pour les notifications
+                    const borrowingDetails = await conn.query(`
+                        SELECT 
+                            b.id_member,
+                            b.id_game,
+                            CONCAT(m.firstname, ' ', m.name) as member_name,
+                            g.name as game_name
+                        FROM borrowings b
+                        JOIN members m ON b.id_member = m.id
+                        JOIN games g ON b.id_game = g.id
+                        WHERE b.id = ?
+                    `, [id]);
+                    
+                    if (borrowingDetails.length > 0) {
+                        const details = borrowingDetails[0];
+                        
+                        await notificationService.createBorrowingNotifications({
+                            borrowingId: id,
+                            memberId: details.id_member,
+                            gameId: details.id_game,
+                            gameName: details.game_name,
+                            memberName: details.member_name,
+                            type: 'return'
+                        });
+                        
+                        console.log(`[DEBUG] Return notifications created for borrowing ${id}`);
+                    }
+                } catch (error) {
+                    console.error('[ERROR] Failed to create return notifications:', error);
+                    // Ne pas faire échouer le retour si les notifications échouent
+                }
+            }
             
             return result;
         } catch (error) {
             // Annuler la transaction en cas d'erreur
-            await db.pool.query("ROLLBACK");
+            await conn.rollback();
             console.error(`[ERROR] Failed to return borrowing ${id}:`, error);
             throw error;
+        } finally {
+            // Liberer la connexion
+            if (conn) conn.release();
         }
     }
 
@@ -279,12 +360,15 @@ class BorrowingsService {
      * Supprimer un emprunt
      */
     static async deleteBorrowing(id) {
-        // Commencer une transaction pour assurer la coherence
-        await db.pool.query("START TRANSACTION");
+        // Obtenir une connexion unique du pool pour la transaction
+        const conn = await db.pool.getConnection();
         
         try {
+            // Commencer une transaction
+            await conn.beginTransaction();
+            
             // Recuperer l'ID du jeu et verifier si l'emprunt etait en cours
-            const borrowingResult = await db.pool.query(
+            const borrowingResult = await conn.query(
                 "SELECT id_game, return_date FROM borrowings WHERE id = ?", 
                 [id]
             );
@@ -297,28 +381,31 @@ class BorrowingsService {
             const returnDate = borrowingResult[0].return_date;
             
             // Supprimer l'emprunt
-            const result = await db.pool.query(
+            const result = await conn.query(
                 "DELETE FROM borrowings WHERE id = ?", 
                 [id]
             );
             
             // Si l'emprunt n'etait pas encore retourne, remettre le jeu disponible
             if (!returnDate) {
-                await db.pool.query(
-                    "UPDATE games SET available = 1 WHERE id = ?", 
+                await conn.query(
+                    "UPDATE games SET available = '1' WHERE id = ?", 
                     [gameId]
                 );
             }
             
             // Valider la transaction
-            await db.pool.query("COMMIT");
+            await conn.commit();
             
             return result;
         } catch (error) {
             // Annuler la transaction en cas d'erreur
-            await db.pool.query("ROLLBACK");
+            await conn.rollback();
             console.error(error);
             throw error;
+        } finally {
+            // Liberer la connexion
+            if (conn) conn.release();
         }
     }
 

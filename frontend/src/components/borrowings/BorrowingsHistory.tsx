@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Borrowing } from '../../types/borrowings';
-import { Member } from '../../types/members';
-import { Game } from '../../types/games';
+import { BorrowingHistoryItem, BorrowingHistoryFilters } from '../../types/borrowings';
 import { BorrowingsService } from '../../services/borrowingsService';
-import { MembersService } from '../../services/membersService';
 import { GamesService } from '../../services/gamesService';
+import { MembersService } from '../../services/membersService';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import ErrorAlert from '../ui/ErrorAlert';
+import { useCSVExport, csvConfigs } from '../../utils/csvExport';
 
 interface BorrowingsHistoryProps {
   refreshTrigger?: number;
-}
-
-interface ExtendedBorrowing extends Borrowing {
-  member?: Member | undefined;
-  game?: Game | undefined;
 }
 
 type FilterType = 'all' | 'returned' | 'current';
@@ -22,9 +16,12 @@ type SortField = 'borrow_date' | 'return_date' | 'member_name' | 'game_name';
 type SortOrder = 'asc' | 'desc';
 
 const BorrowingsHistory: React.FC<BorrowingsHistoryProps> = ({ refreshTrigger }) => {
-  const [borrowings, setBorrowings] = useState<ExtendedBorrowing[]>([]);
+  const [borrowings, setBorrowings] = useState<BorrowingHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Export CSV
+  const { exportData, isExporting, exportError, clearError } = useCSVExport();
   
   // Filtres et recherche
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,42 +30,33 @@ const BorrowingsHistory: React.FC<BorrowingsHistoryProps> = ({ refreshTrigger })
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const [limit, setLimit] = useState(100);
 
   const loadBorrowingsHistory = async () => {
     try {
       setIsLoading(true);
       setError(null);
       
-      // Charger les données de base
-      const [membersData, gamesData] = await Promise.all([
-        MembersService.getAllMembers(),
-        GamesService.getAllGames(),
-      ]);
-
-      // Pour l'historique complet, on utilise les emprunts par membre de tous les membres
-      const allBorrowings: ExtendedBorrowing[] = [];
+      // Preparer les filtres pour l'API
+      const filters: BorrowingHistoryFilters = {
+        limit,
+      };
       
-      for (const member of membersData) {
-        try {
-          const memberBorrowings = await BorrowingsService.getBorrowingsByMember(member.id);
-          const extendedBorrowings = memberBorrowings.map(borrowing => ({
-            ...borrowing,
-            member,
-            game: gamesData.find(g => g.id === borrowing.id_game) || undefined,
-          }));
-          allBorrowings.push(...extendedBorrowings);
-        } catch (err) {
-          console.warn(`Erreur lors du chargement des emprunts pour le membre ${member.id}:`, err);
-        }
+      if (filterType !== 'all') {
+        filters.status = filterType;
       }
-
-      // Trier par ID pour éviter les doublons et garder l'ordre
-      const uniqueBorrowings = allBorrowings
-        .filter((borrowing, index, self) => 
-          index === self.findIndex(b => b.id === borrowing.id)
-        );
-
-      setBorrowings(uniqueBorrowings);
+      
+      if (dateFrom) {
+        filters.dateFrom = dateFrom;
+      }
+      
+      if (dateTo) {
+        filters.dateTo = dateTo;
+      }
+      
+      // Utiliser la nouvelle API optimisee
+      const historyData = await BorrowingsService.getBorrowingsHistory(filters);
+      setBorrowings(historyData);
     } catch (err) {
       setError('Erreur lors du chargement de l\'historique des emprunts');
       console.error(err);
@@ -79,41 +67,22 @@ const BorrowingsHistory: React.FC<BorrowingsHistoryProps> = ({ refreshTrigger })
 
   useEffect(() => {
     loadBorrowingsHistory();
-  }, [refreshTrigger]);
+  }, [refreshTrigger, filterType, dateFrom, dateTo, limit]);
 
-  // Filtrer les emprunts
+  // Filtrer les emprunts selon le terme de recherche (cote client pour la reactivite)
   const filteredBorrowings = borrowings.filter(borrowing => {
-    // Filtre par type (tous/retournés/en cours)
-    if (filterType === 'returned' && !borrowing.return_date) return false;
-    if (filterType === 'current' && borrowing.return_date) return false;
-
     // Filtre par terme de recherche
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      const memberName = borrowing.member 
-        ? `${borrowing.member.firstname || ''} ${borrowing.member.name || ''}`.toLowerCase()
-        : '';
-      const memberEmail = borrowing.member?.email?.toLowerCase() || '';
-      const gameName = borrowing.game?.name?.toLowerCase() || '';
+      const memberName = `${borrowing.member_firstname || ''} ${borrowing.member_lastname || ''}`.toLowerCase();
+      const memberEmail = borrowing.member_email?.toLowerCase() || '';
+      const gameName = borrowing.game_name?.toLowerCase() || '';
       
       if (!memberName.includes(term) && 
           !memberEmail.includes(term) && 
           !gameName.includes(term)) {
         return false;
       }
-    }
-
-    // Filtre par date
-    if (dateFrom) {
-      const borrowDate = new Date(borrowing.borrow_date);
-      const fromDate = new Date(dateFrom);
-      if (borrowDate < fromDate) return false;
-    }
-
-    if (dateTo) {
-      const borrowDate = new Date(borrowing.borrow_date);
-      const toDate = new Date(dateTo);
-      if (borrowDate > toDate) return false;
     }
 
     return true;
@@ -133,13 +102,13 @@ const BorrowingsHistory: React.FC<BorrowingsHistoryProps> = ({ refreshTrigger })
         comparison = aReturnDate - bReturnDate;
         break;
       case 'member_name':
-        const aMemberName = a.member ? `${a.member.firstname || ''} ${a.member.name || ''}` : '';
-        const bMemberName = b.member ? `${b.member.firstname || ''} ${b.member.name || ''}` : '';
+        const aMemberName = `${a.member_firstname || ''} ${a.member_lastname || ''}`;
+        const bMemberName = `${b.member_firstname || ''} ${b.member_lastname || ''}`;
         comparison = aMemberName.localeCompare(bMemberName);
         break;
       case 'game_name':
-        const aGameName = a.game?.name || '';
-        const bGameName = b.game?.name || '';
+        const aGameName = a.game_name || '';
+        const bGameName = b.game_name || '';
         comparison = aGameName.localeCompare(bGameName);
         break;
     }
@@ -184,6 +153,24 @@ const BorrowingsHistory: React.FC<BorrowingsHistoryProps> = ({ refreshTrigger })
     );
   };
 
+  const handleReloadData = () => {
+    loadBorrowingsHistory();
+  };
+
+  const handleExportCSV = async () => {
+    try {
+      const exportData_filtered = filteredBorrowings.map(borrowing => ({
+        ...borrowing,
+        status: borrowing.return_date ? 'Retourne' : 'En cours'
+      }));
+      
+      const filename = `historique-emprunts-${new Date().toISOString().split('T')[0]}`;
+      await exportData(exportData_filtered, csvConfigs.borrowingsHistory, filename);
+    } catch (error) {
+      console.error('Erreur lors de l\'export:', error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">
@@ -201,11 +188,18 @@ const BorrowingsHistory: React.FC<BorrowingsHistoryProps> = ({ refreshTrigger })
         />
       )}
 
+      {exportError && (
+        <ErrorAlert 
+          message={`Erreur d'export: ${exportError}`} 
+          onClose={clearError} 
+        />
+      )}
+
       {/* Filtres */}
       <div className="bg-white rounded-lg border border-gray-200 p-4">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Filtres et recherche</h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Recherche */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -232,14 +226,14 @@ const BorrowingsHistory: React.FC<BorrowingsHistoryProps> = ({ refreshTrigger })
             >
               <option value="all">Tous les emprunts</option>
               <option value="current">En cours</option>
-              <option value="returned">Retournés</option>
+              <option value="returned">Retournes</option>
             </select>
           </div>
 
-          {/* Date de début */}
+          {/* Date de debut */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              À partir du
+              A partir du
             </label>
             <input
               type="date"
@@ -261,32 +255,80 @@ const BorrowingsHistory: React.FC<BorrowingsHistoryProps> = ({ refreshTrigger })
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
+
+          {/* Limite */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Limite
+            </label>
+            <select
+              value={limit}
+              onChange={(e) => setLimit(parseInt(e.target.value))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value={50}>50 resultats</option>
+              <option value={100}>100 resultats</option>
+              <option value={200}>200 resultats</option>
+              <option value={500}>500 resultats</option>
+            </select>
+          </div>
         </div>
 
-        {/* Bouton de réinitialisation */}
-        <div className="mt-4 flex justify-end">
+        {/* Boutons d'action */}
+        <div className="mt-4 flex justify-between">
           <button
             onClick={() => {
               setSearchTerm('');
               setFilterType('all');
               setDateFrom('');
               setDateTo('');
+              setLimit(100);
             }}
             className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
           >
-            Réinitialiser les filtres
+            Reinitialiser les filtres
           </button>
+          
+          <div className="flex space-x-3">
+            <button
+              onClick={handleExportCSV}
+              disabled={isExporting || sortedBorrowings.length === 0}
+              className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+            >
+              {isExporting ? (
+                <>
+                  <LoadingSpinner size="sm" />
+                  <span className="ml-2">Export...</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Exporter CSV
+                </>
+              )}
+            </button>
+            
+            <button
+              onClick={handleReloadData}
+              className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500"
+            >
+              Actualiser
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Résultats */}
+      {/* Resultats */}
       <div className="bg-white rounded-lg border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">
             Historique des emprunts
           </h3>
           <p className="text-sm text-gray-500 mt-1">
-            {sortedBorrowings.length} résultat{sortedBorrowings.length !== 1 ? 's' : ''}
+            {sortedBorrowings.length} resultat{sortedBorrowings.length !== 1 ? 's' : ''} 
+            {borrowings.length >= limit && ` (limite de ${limit} appliquée)`}
           </p>
         </div>
 
@@ -305,9 +347,9 @@ const BorrowingsHistory: React.FC<BorrowingsHistoryProps> = ({ refreshTrigger })
                 d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" 
               />
             </svg>
-            <p className="mt-4 text-lg font-medium text-gray-900">Aucun emprunt trouvé</p>
+            <p className="mt-4 text-lg font-medium text-gray-900">Aucun emprunt trouve</p>
             <p className="text-sm text-gray-500 mt-1">
-              Essayez de modifier vos critères de recherche
+              Essayez de modifier vos criteres de recherche
             </p>
           </div>
         ) : (
@@ -352,7 +394,7 @@ const BorrowingsHistory: React.FC<BorrowingsHistoryProps> = ({ refreshTrigger })
                     </button>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Durée
+                    Duree
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Statut
@@ -364,39 +406,36 @@ const BorrowingsHistory: React.FC<BorrowingsHistoryProps> = ({ refreshTrigger })
                   <tr key={borrowing.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        {borrowing.game?.picture && (
+                        {borrowing.game_picture && (
                           <img
-                            src={GamesService.getImageUrl(borrowing.game.picture)}
-                            alt={borrowing.game.name}
+                            src={GamesService.getImageUrl(borrowing.game_picture)}
+                            alt={borrowing.game_name}
                             className="w-10 h-10 rounded object-cover mr-3"
                           />
                         )}
                         <div>
                           <div className="text-sm font-medium text-gray-900">
-                            {borrowing.game?.name || 'Jeu inconnu'}
+                            {borrowing.game_name || 'Jeu inconnu'}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        {borrowing.member?.picture && (
+                        {borrowing.member_picture && (
                           <img
-                            src={MembersService.getImageUrl(borrowing.member.picture)}
-                            alt={`${borrowing.member?.firstname || ''} ${borrowing.member?.name || ''}`}
+                            src={MembersService.getImageUrl(borrowing.member_picture)}
+                            alt={`${borrowing.member_firstname || ''} ${borrowing.member_lastname || ''}`}
                             className="w-8 h-8 rounded-full object-cover mr-2"
                           />
                         )}
                         <div>
                           <div className="text-sm font-medium text-gray-900">
-                            {borrowing.member 
-                              ? `${borrowing.member.firstname || ''} ${borrowing.member.name || ''}`
-                              : 'Membre inconnu'
-                            }
+                            {`${borrowing.member_firstname || ''} ${borrowing.member_lastname || ''}`}
                           </div>
-                          {borrowing.member?.email && (
+                          {borrowing.member_email && (
                             <div className="text-sm text-gray-500">
-                              {borrowing.member.email}
+                              {borrowing.member_email}
                             </div>
                           )}
                         </div>
@@ -420,7 +459,7 @@ const BorrowingsHistory: React.FC<BorrowingsHistoryProps> = ({ refreshTrigger })
                           ? 'bg-green-100 text-green-800' 
                           : 'bg-yellow-100 text-yellow-800'
                       }`}>
-                        {borrowing.return_date ? 'Retourné' : 'En cours'}
+                        {borrowing.return_date ? 'Retourne' : 'En cours'}
                       </span>
                     </td>
                   </tr>

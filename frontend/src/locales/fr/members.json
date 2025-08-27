@@ -1,0 +1,114 @@
+{
+  "title": "Gestion des membres",
+  "subtitle": "Gérez les membres de votre club",
+  "add_member": "Ajouter un membre",
+  "edit_member": "Modifier le membre",
+  "member_details": "Détails du membre",
+  "no_members": "Aucun membre dans le club",
+  "search_members": "Rechercher des membres...",
+  "fields": {
+    "name": "Nom",
+    "firstname": "Prénom",
+    "email": "E-mail",
+    "phone_number": "Téléphone",
+    "address": "Adresse",
+    "postal_code": "Code postal",
+    "city": "Ville",
+    "birth_date": "Date de naissance",
+    "picture": "Photo",
+    "discord_tag": "Discord",
+    "membership": "Adhésion",
+    "deposit": "Caution",
+    "admin": "Administrateur"
+  },
+  "membership": {
+    "active": "Actif",
+    "inactive": "Inactif",
+    "pending": "En attente",
+    "expired": "Expiré",
+    "current_season": "Saison actuelle",
+    "join_season": "Rejoindre la saison",
+    "leave_season": "Quitter la saison"
+  },
+  "deposit": {
+    "paid": "Payée",
+    "unpaid": "Non payée",
+    "amount": "Montant",
+    "date_paid": "Date de paiement"
+  },
+  "actions": {
+    "view": "Voir",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "activate": "Activer",
+    "deactivate": "Désactiver",
+    "make_admin": "Nommer admin",
+    "remove_admin": "Retirer admin",
+    "contact": "Contacter"
+  },
+  "filters": {
+    "all": "Tous",
+    "active": "Actifs",
+    "inactive": "Inactifs",
+    "admin": "Administrateurs",
+    "current_season": "Saison actuelle",
+    "with_deposit": "Caution payée",
+    "without_deposit": "Caution non payée"
+  },
+  "sort": {
+    "name": "Nom",
+    "firstname": "Prénom",
+    "join_date": "Date d'adhésion",
+    "activity": "Activité"
+  },
+  "stats": {
+    "total": "Total",
+    "active": "Actifs",
+    "new_this_season": "Nouveaux cette saison",
+    "with_deposits": "Cautions payées"
+  },
+  "borrowing_stats": {
+    "current_borrowings": "Emprunts actuels",
+    "total_borrowings": "Total emprunts",
+    "favorite_games": "Jeux préférés",
+    "last_activity": "Dernière activité"
+  },
+  "contact": {
+    "send_email": "Envoyer un e-mail",
+    "call": "Appeler",
+    "discord": "Contacter sur Discord"
+  },
+  "messages": {
+    "added": "Membre ajouté avec succès",
+    "updated": "Membre mis à jour avec succès",
+    "deleted": "Membre supprimé avec succès",
+    "activated": "Membre activé avec succès",
+    "deactivated": "Membre désactivé avec succès",
+    "error_add": "Erreur lors de l'ajout du membre",
+    "error_update": "Erreur lors de la mise à jour du membre",
+    "error_delete": "Erreur lors de la suppression du membre",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer ce membre ?",
+    "has_active_borrowings": "Ce membre a des emprunts en cours",
+    "admin_rights_granted": "Droits administrateur accordés",
+    "admin_rights_revoked": "Droits administrateur révoqués"
+  },
+  "validation": {
+    "name_required": "Le nom est obligatoire",
+    "firstname_required": "Le prénom est obligatoire",
+    "email_required": "L'e-mail est obligatoire",
+    "email_invalid": "Format d'e-mail invalide",
+    "phone_invalid": "Format de téléphone invalide",
+    "postal_code_invalid": "Code postal invalide",
+    "birth_date_invalid": "Date de naissance invalide",
+    "birth_date_future": "La date de naissance ne peut pas être dans le futur",
+    "age_too_young": "L'âge minimum est de 13 ans"
+  },
+  "photo": {
+    "upload": "Télécharger une photo",
+    "change": "Changer la photo",
+    "remove": "Supprimer la photo",
+    "preview": "Aperçu",
+    "formats": "Formats acceptés: JPG, PNG",
+    "max_size": "Taille max: 2MB"
+  }
+}

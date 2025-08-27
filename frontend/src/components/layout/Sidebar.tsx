@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -15,6 +16,11 @@ const navigationItems = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
       </svg>
     ),
+  },
+  {
+    name: 'Recherche',
+    href: '/search',
+    icon: <MagnifyingGlassIcon className="h-5 w-5" />,
   },
   {
     name: 'Jeux',
